@@ -43,6 +43,7 @@ spec = Gem::Specification.new do |s|
 
   s.files = PKG_FILES.to_a
   s.require_path = 'lib'
+  s.executables = ['js_spec_server']
 
   s.has_rdoc = true
   s.extra_rdoc_files = [ "README", "CHANGES" ]
