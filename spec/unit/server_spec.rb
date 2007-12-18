@@ -65,13 +65,13 @@ module JsSpec
 
     describe ".spec_root" do
       it "returns the Dir " do
-        Server.spec_root_path.should == spec_root_path
+        Server.spec_root_path.should == ::File.expand_path(spec_root_path)
       end
     end
 
     describe ".spec_root_path" do
       it "returns the absolute path of the specs root directory" do
-        Server.spec_root_path.should == spec_root_path
+        Server.spec_root_path.should == ::File.expand_path(spec_root_path)
       end
     end
 
@@ -85,7 +85,7 @@ module JsSpec
     describe ".implementation_root_path" do
       it "returns the expanded path to the JsSpec implementations directory" do
         dir = ::File.dirname(__FILE__)
-        Server.implementation_root_path.should == implementation_root_path
+        Server.implementation_root_path.should == ::File.expand_path(implementation_root_path)
       end
     end
 
@@ -142,6 +142,14 @@ module JsSpec
         get('/core')
 
         JsSpec::Server.response.should be_nil
+      end
+    end
+
+    describe "#initialize" do
+      it "expands relative paths for #spec_root_path and #implementation_root_path" do
+        server = Server.new("foo", "bar")
+        server.spec_root_path.should == ::File.expand_path("foo")
+        server.implementation_root_path.should == ::File.expand_path("bar")
       end
     end
   end

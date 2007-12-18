@@ -26,8 +26,8 @@ module Spec::Example::ExampleMethods
   attr_reader :spec_root_path, :implementation_root_path, :server
   before(:all) do
     dir = File.dirname(__FILE__)
-    @spec_root_path = "#{dir}/../example_specs"
-    @implementation_root_path = "#{dir}/../example_implementation"
+    @spec_root_path = ::File.expand_path("#{dir}/../example_specs")
+    @implementation_root_path = ::File.expand_path("#{dir}/../example_implementation")
   end
 
   before(:each) do
@@ -61,12 +61,12 @@ module Spec::Example::ExampleMethods
   end
 
   def spec_file(relative_path)
-    absolute_path = spec_root_path + relative_path
+    absolute_path = File.expand_path(spec_root_path + relative_path)
     JsSpec::File.new(absolute_path, "/specs#{relative_path}")
   end
 
   def spec_dir(relative_path="")
-    absolute_path = spec_root_path + relative_path
+    absolute_path = File.expand_path(spec_root_path + relative_path)
     JsSpec::Dir.new(absolute_path, "/specs#{relative_path}")
   end
 

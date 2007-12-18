@@ -22,8 +22,8 @@ module JsSpec
 
     protected
     def determine_child_paths(name)
-      absolute_child_path = "#{absolute_path}/#{name}"
-      relative_child_path = "#{relative_path}/#{name}"
+      absolute_child_path = ::File.expand_path("#{absolute_path}/#{name}")
+      relative_child_path = ::File.expand_path("#{relative_path}/#{name}")
       [absolute_child_path, relative_child_path]
     end
 

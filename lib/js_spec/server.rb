@@ -25,8 +25,8 @@ module JsSpec
     def initialize(spec_root_path, implementation_root_path, host=DEFAULT_HOST, port=DEFAULT_PORT)
       dir = ::File.dirname(__FILE__)
       @core_path = ::File.expand_path("#{dir}/../../core")
-      @spec_root_path = spec_root_path
-      @implementation_root_path = implementation_root_path
+      @spec_root_path = ::File.expand_path(spec_root_path)
+      @implementation_root_path = ::File.expand_path(implementation_root_path)
       @host = host
       @port = port
     end
