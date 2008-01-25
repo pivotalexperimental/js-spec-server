@@ -1,9 +1,0 @@
-= JsSpec
-The JsSpec ruby library is a server runner for the JsSpec javascript library.
-
-http://code.google.com/p/jsspec/
-http://jania.pe.kr/aw/moin.cgi/JSSpec
-
-== Using JsSpec
-js_spec_server /path/to/your/javascript/spec/files /path/to/your/javascript/implementation/files
-Open your browser to http://localhost:8080/specs
