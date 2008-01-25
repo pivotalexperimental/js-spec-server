@@ -11,6 +11,7 @@ require "#{dir}/js_spec/resources/runners"
 require "#{dir}/js_spec/resources/runners/firefox_runner"
 
 require "#{dir}/js_spec/server"
+require "#{dir}/js_spec/rails_server"
 require "#{dir}/js_spec/resources/spec_runner"
 require "#{dir}/js_spec/resources/spec_file_runner"
 require "#{dir}/js_spec/resources/spec_dir_runner"
