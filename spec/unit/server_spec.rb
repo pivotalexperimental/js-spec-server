@@ -115,7 +115,7 @@ module JsSpec
     describe ".request" do
       it "returns request in progress for the thread" do
         the_request = nil
-        stub.instance_of(WebRoot).locate('somedir') do
+        stub.instance_of(Resources::WebRoot).locate('somedir') do
           the_request = JsSpec::Server.request
           Thread.current[:request].should == the_request
           thread2 = Thread.new do
@@ -143,7 +143,7 @@ module JsSpec
     describe ".response" do
       it "returns response in progress" do
         the_response = nil
-        stub.instance_of(WebRoot).locate('somedir') do
+        stub.instance_of(Resources::WebRoot).locate('somedir') do
           the_response = JsSpec::Server.response
           Thread.current[:response].should == the_response
           thread2 = Thread.new do
@@ -171,7 +171,7 @@ module JsSpec
     describe "#call" do
       it "when resource responds with a string, sets the string as the response.body" do
         somedir_resource = Object.new
-        stub.instance_of(WebRoot).locate('somedir') do
+        stub.instance_of(Resources::WebRoot).locate('somedir') do
           somedir_resource
         end
 
@@ -186,7 +186,7 @@ module JsSpec
         attr_reader :top_line_of_backtrace
         before do
           @top_line_of_backtrace = __LINE__ + 2
-          stub.instance_of(WebRoot).locate('somedir') do
+          stub.instance_of(Resources::WebRoot).locate('somedir') do
             raise "Foobar"
           end
         end

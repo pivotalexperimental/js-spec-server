@@ -63,12 +63,12 @@ module Spec::Example::ExampleMethods
 
   def spec_file(relative_path)
     absolute_path = spec_root_path + relative_path
-    JsSpec::File.new(absolute_path, "/specs#{relative_path}")
+    JsSpec::Resources::File.new(absolute_path, "/specs#{relative_path}")
   end
 
   def spec_dir(relative_path="")
     absolute_path = spec_root_path + relative_path
-    JsSpec::Dir.new(absolute_path, "/specs#{relative_path}")
+    JsSpec::Resources::Dir.new(absolute_path, "/specs#{relative_path}")
   end
 
   def contain_spec_file_with_correct_paths(path_relative_to_spec_root)

@@ -1,17 +1,19 @@
-require File.expand_path("#{File.dirname(__FILE__)}/../unit_spec_helper")
+require File.expand_path("#{File.dirname(__FILE__)}/../../unit_spec_helper")
 
 module JsSpec
-  describe Runners::FirefoxRunner do
+  module Resources
+    describe Runners::FirefoxRunner do
     attr_reader :runner
     before do
       @runner = Runners::FirefoxRunner.new
     end
 
     describe "#post" do
-      attr_reader :firefox_profile_path, :expected_profile_dir
+      attr_reader :firefox_profile_path
       before do
         dir = ::File.dirname(__FILE__)
-        @firefox_profile_path = ::File.expand_path("#{dir}/../../../resources/firefox")
+        @firefox_profile_path = ::File.expand_path("#{dir}/../../../../resources/firefox")
+        ::File.should be_directory(firefox_profile_path)
       end
 
       it "returns ''" do
@@ -80,5 +82,6 @@ module JsSpec
         runner.__send__(:start_browser, "foobar")
       end
     end
+  end
   end
 end

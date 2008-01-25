@@ -1,5 +1,6 @@
 module JsSpec
-  class Runners
+  module Resources
+    class Runners
     class FirefoxRunner
       class << self
         def resume(guid, text)
@@ -42,14 +43,14 @@ module JsSpec
         thread = Thread.start {sleep}
         self.class.threads[guid] = thread
         thread.join
-        
+
         self.class.response_value guid
       end
 
       protected
       def copy_profile_files
         dir = ::File.dirname(__FILE__)
-        firefox_profile_path = ::File.expand_path("#{dir}/../../../resources/firefox")
+        firefox_profile_path = ::File.expand_path("#{dir}/../../../../resources/firefox")
         system("cp -R #{firefox_profile_path} #{profile_dir}") || raise("Copying Firefox profile failed")
       end
 
@@ -84,5 +85,6 @@ module JsSpec
         lock_is_gone?
       end
     end
+  end
   end
 end

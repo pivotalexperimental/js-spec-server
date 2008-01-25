@@ -75,7 +75,7 @@ module JsSpec
     end
 
     def get_resource
-      path_parts.inject(WebRoot.new(public_path)) do |resource, child_resource_name|
+      path_parts.inject(Resources::WebRoot.new(public_path)) do |resource, child_resource_name|
         resource.locate(child_resource_name)
       end
     rescue Exception => e
