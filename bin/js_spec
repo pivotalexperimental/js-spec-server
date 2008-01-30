@@ -8,3 +8,13 @@ require "net/http"
 response = Net::HTTP.start(JsSpec::Server::DEFAULT_HOST, JsSpec::Server::DEFAULT_PORT) do |http|
   http.post('/runners/firefox', {})
 end
+
+body = response.body
+if body.empty?
+  puts "SUCCESS"
+  exit 0
+else
+  puts "FAILURE"
+  puts body
+  exit 1
+end

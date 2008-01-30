@@ -17,11 +17,9 @@ module JsSpec
       end
 
       it "returns ''" do
-        guid = nil
-        stub.proxy(UUID).new {|guid| guid = guid}
+        guid = 'foobar'
+        # stub.proxy(UUID).new {|guid| guid = guid}
         stub(runner).system {true}
-        stub(runner).sleep(0.5)
-        stub(runner).sleep {Kernel.sleep}
 
         post_return_value = nil
         Thread.start do
@@ -30,10 +28,10 @@ module JsSpec
         wait_for do
           Runners::FirefoxRunner.threads[guid]
         end
-        Runners::FirefoxRunner.resume(guid, 'foobar')
+        Runners::FirefoxRunner.resume(guid, 'text from the browser')
 
         wait_for do
-          post_return_value == 'foobar'
+          post_return_value == 'text from the browser'
         end
       end
 
@@ -46,40 +44,24 @@ module JsSpec
       end
 
       it "copies the firefox profile files to a tmp directory " <<
-        "and creates a profile " <<
-        "and waits for profile to be created " <<
-        "and starts firefox" do
+        "and initializes a profile " <<
+        "and tests that the profile is created " <<
+        "and starts firefox" <<
+        "and kills firefox" do
         stub(runner).sleep
 
-        mock(runner).system("cp -R #{firefox_profile_path} #{runner.profile_dir}").ordered {true}
-        mock(runner).system("firefox -profile #{runner.profile_dir} -chrome chrome://killff/content/kill.html").ordered {true}
-        mock(::File).exists?("#{runner.profile_dir}/parent.lock").ordered {false}
-        mock(runner).sleep(0.5).ordered
-        mock(::File).exists?("#{runner.profile_dir}/parent.lock").ordered {false}
-        mock(runner).system(Regexp.new("firefox -profile #{runner.profile_dir} http://localhost:8080/specs")).ordered {true}
-        stub(runner).callcc
-        runner.post
-      end
-
-      it "calls #copy_profile_files, #create_profile, #wait_for_full_profile_to_be_created, and #start_browser" do
-        stub(runner).system {true}
-        stub(runner).sleep
-        stub(runner).callcc
-
-        mock.proxy(runner).copy_profile_files.ordered
-        mock.proxy(runner).create_profile.ordered
-        mock.proxy(runner).wait_for_full_profile_to_be_created.ordered
-        mock.proxy(runner).start_browser(is_a(String)).ordered
-
+        mock(runner).system(runner.command_for(:copy_profile)).ordered {true}
+        mock(runner).system(runner.command_for(:init_profile)).ordered {true}
+        mock(runner).system(runner.command_for(:test_profile)).ordered {true}
+        mock(runner).system(runner.command_for(:start_browser)).ordered {true}
+        mock(runner).system(runner.command_for(:kill_browser)).ordered {true}
         runner.post
       end
     end
 
     describe "#start_browser" do
       it "starts a firefox browser in a thread" do
-        mock(Thread).start.yields
-        mock(runner).system("firefox -profile #{runner.profile_dir} http://localhost:8080/specs?guid=foobar").ordered {true}
-        runner.__send__(:start_browser, "foobar")
+        runner.command_for(:start_browser).should == "firefox -profile #{runner.profile_dir} http://localhost:8080/specs?guid=#{runner.guid}"
       end
     end
   end

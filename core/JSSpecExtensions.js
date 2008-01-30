@@ -38,13 +38,14 @@ JSSpec.Logger.prototype.onRunnerEndWithoutServerNotification = JSSpec.Logger.pro
 JSSpec.Logger.prototype.onRunnerEndWithServerNotification = function() {
   this.onRunnerEndWithoutServerNotification();
   var data = {
-    'text': this.get_error_message_text()
+    'text': this.get_error_message_text(),
+    'guid': 'foobar'
   };
 
-  current_location_params = parse_url(window.location.href);
-  if(current_location_params.guid) {
-    data.guid = current_location_params.guid;
-  }
+  // current_location_params = parse_url(window.location.href);
+  // if(current_location_params.guid) {
+  //   data.guid = 'foobar'; // current_location_params.guid;
+  // }
   jQuery.realAjax({
     type: 'POST',
     url: '/suites/1/finish',
