@@ -55,7 +55,7 @@ module JsSpec
           when :init_profile
             "firefox -profile #{profile_dir} -chrome chrome://killff/content/kill.html"
           when :test_profile
-            "if [ -f \"#{profile_dir}/xpti.dat\" ] && [ \"`ps aux | grep #{profile_dir} | sed /grep/d`\" == '' ]; then exit 0 ; else exit 1 ; fi"
+            %Q<if [ -f "#{profile_dir}/xpti.dat" ] && [ "`ps aux | grep #{profile_dir} | sed /grep/d`" = '' ]; then exit 0 ; else exit 1 ; fi>
           when :start_browser
             url = (Server.request && Server.request['url']) ? Server.request['url'] : spec_suite_url
             "firefox -profile #{profile_dir} #{url}?guid=#{guid}"
