@@ -36,6 +36,11 @@ module Spec::Example::ExampleMethods
     @server = JsSpec::Server.instance
   end
 
+  after(:each) do
+    Thread.current[:request] = nil
+    Thread.current[:response] = nil
+  end
+
   def get(url, params={})
     request(:get, url, params)
   end

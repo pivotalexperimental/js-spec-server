@@ -4,13 +4,13 @@ require File.expand_path("#{dir}/runners/firefox_runner")
 module JsSpec
   module Resources
     class Runners
-    def locate(name)
-      if name == 'firefox'
-        FirefoxRunner.new
-      else
-        raise "Invalid path #{name}"
+      def locate(name)
+        if name == 'firefox'
+          FirefoxRunner.new
+        else
+          raise "Invalid path #{name}"
+        end
       end
     end
-  end
   end
 end

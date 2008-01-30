@@ -57,7 +57,8 @@ module JsSpec
           when :test_profile
             "if [ -f \"#{profile_dir}/xpti.dat\" ] && [ \"`ps aux | grep #{profile_dir} | sed /grep/d`\" == '' ]; then exit 0 ; else exit 1 ; fi"
           when :start_browser
-            "firefox -profile #{profile_dir} #{spec_suite_url}?guid=#{guid}"
+            url = (Server.request && Server.request['url']) ? Server.request['url'] : spec_suite_url
+            "firefox -profile #{profile_dir} #{url}?guid=#{guid}"
           when :kill_browser
             %Q<ps aux | grep "#{profile_dir}" | sed /grep/d | awk '{print $2}' | xargs kill -9>
           else
