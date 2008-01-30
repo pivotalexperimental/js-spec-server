@@ -5,11 +5,14 @@ require "fileutils"
 require "tmpdir"
 require "timeout"
 require "uuid"
+require "net/http"
+
 
 dir = File.dirname(__FILE__)
 require "#{dir}/js_spec/resources/runners"
 require "#{dir}/js_spec/resources/runners/firefox_runner"
 
+require "#{dir}/js_spec/client"
 require "#{dir}/js_spec/server"
 require "#{dir}/js_spec/rails_server"
 require "#{dir}/js_spec/resources/spec_runner"
