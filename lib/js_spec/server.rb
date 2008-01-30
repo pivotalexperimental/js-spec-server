@@ -48,6 +48,10 @@ module JsSpec
     def response
       Thread.current[:response]
     end
+
+    def root_url
+      "http://#{host}:#{port}"
+    end
     
     protected
     def request=(request)

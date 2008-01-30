@@ -207,5 +207,11 @@ module JsSpec
         end
       end
     end
+
+    describe "#root_url" do
+      it "returns the url of the site's root" do
+        server.root_url.should == "http://#{server.host}:#{server.port}"
+      end
+    end
   end
 end
