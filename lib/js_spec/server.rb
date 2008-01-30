@@ -10,10 +10,6 @@ module JsSpec
         Rack::Handler::Mongrel.run(instance, server_options)
       end
 
-      def default_url
-        "http://#{DEFAULT_HOST}:#{DEFAULT_PORT}"
-      end
-
       def spec_root_path; instance.spec_root_path; end
       def implementation_root_path; instance.implementation_root_path; end
       def public_path; instance.public_path; end

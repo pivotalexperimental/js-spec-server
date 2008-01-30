@@ -74,12 +74,6 @@ module JsSpec
       end
     end
 
-    describe ".default_url" do
-      it "returns the default host and port" do
-        Server.default_url.should == "http://#{DEFAULT_HOST}:#{DEFAULT_PORT}"
-      end
-    end
-
     describe ".spec_root" do
       it "returns the Dir " do
         Server.spec_root_path.should == spec_root_path

@@ -1,4 +1,3 @@
-
 module JsSpec
   class Client
     class << self
