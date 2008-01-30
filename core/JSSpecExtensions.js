@@ -46,11 +46,16 @@ JSSpec.Logger.prototype.onRunnerEndWithServerNotification = function() {
   // if(current_location_params.guid) {
   //   data.guid = 'foobar'; // current_location_params.guid;
   // }
-  jQuery.realAjax({
+  var post_args = {
     type: 'POST',
     url: '/suites/1/finish',
     data: data
-  });
+  };
+  if(jQuery.realAjax) {
+    jQuery.realAjax(post_args);
+  } else {
+    jQuery.ajax(post_args);
+  }
 }
 JSSpec.Logger.prototype.onRunnerEnd = JSSpec.Logger.prototype.onRunnerEndWithServerNotification;
 

@@ -3,14 +3,13 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../unit_spec_helper")
 module JsSpec
   module Resources
     describe Runners::FirefoxRunner do
-      attr_reader :runner
-      before do
-        @runner = Runners::FirefoxRunner.new
-      end
-
+      attr_reader :runner, :request, :response
       describe "#post" do
         attr_reader :firefox_profile_path
         before do
+          @request = nil
+          @response = nil
+          @runner = Runners::FirefoxRunner.new(request, response)
           dir = ::File.dirname(__FILE__)
           @firefox_profile_path = ::File.expand_path("#{dir}/../../../../resources/firefox")
           ::File.should be_directory(firefox_profile_path)
@@ -62,7 +61,9 @@ module JsSpec
       describe "#start_browser" do
         describe "when there is no current request" do
           before do
-            Server.request.should be_nil
+            @request = nil
+            @response = nil
+            @runner = Runners::FirefoxRunner.new(request, response)
           end
           
           it "starts a firefox browser in a thread" do
@@ -71,16 +72,15 @@ module JsSpec
         end
 
         describe "when there is a current request" do
-          attr_reader :request
           before do
             @request = Rack::MockRequest.new(server)
-            Thread.current[:request] = request
-            Server.request.should_not be_nil
+            @response = nil
+            @runner = Runners::FirefoxRunner.new(request, response)
           end
 
           describe ", and the request url parameter is not set" do
             before do
-              mock(Server.request).[]('url') {nil}
+              mock(request).[]('url') {nil}
             end
 
             it "starts a firefox browser in a thread" do
@@ -92,7 +92,7 @@ module JsSpec
             attr_reader :url
             before do
               @url = 'http://foobar.com/specs/foo/passing_spec'
-              mock(Server.request).[]('url') {url}.at_least(1)
+              mock(request).[]('url') {url}.at_least(1)
             end
             
             it "runs the Firefox Browser for the passed in url" do

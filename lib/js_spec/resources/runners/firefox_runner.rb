@@ -26,13 +26,15 @@ module JsSpec
         end
 
         include FileUtils
-        attr_reader :guid, :profile_dir
+        attr_reader :guid, :profile_dir, :request, :response
 
-        def initialize
+        def initialize(request, response)
           profile_base = "#{::Dir.tmpdir}/js_spec/firefox"
           mkdir_p profile_base
           @profile_dir = "#{profile_base}/#{Time.now.to_i}"
           @guid = 'foobar'
+          @request = request
+          @response = response
         end
 
         def post
@@ -57,7 +59,7 @@ module JsSpec
           when :test_profile
             %Q<if [ -f "#{profile_dir}/xpti.dat" ] && [ "`ps aux | grep #{profile_dir} | sed /grep/d`" = '' ]; then exit 0 ; else exit 1 ; fi>
           when :start_browser
-            url = (Server.request && Server.request['url']) ? Server.request['url'] : spec_suite_url
+            url = (request && request['url']) ? request['url'] : spec_suite_url
             "firefox -profile #{profile_dir} #{url}?guid=#{guid}"
           when :kill_browser
             %Q<ps aux | grep "#{profile_dir}" | sed /grep/d | awk '{print $2}' | xargs kill -9>

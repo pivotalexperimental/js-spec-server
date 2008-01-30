@@ -5,6 +5,7 @@ require "fileutils"
 require "tmpdir"
 require "timeout"
 require "uuid"
+require "cgi"
 require "net/http"
 
 
