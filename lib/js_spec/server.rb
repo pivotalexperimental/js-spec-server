@@ -16,6 +16,7 @@ module JsSpec
       def core_path; instance.core_path; end
       def request; instance.request; end
       def response; instance.response; end
+      def root_url; instance.root_url; end
     end
 
     attr_reader :host, :port, :spec_root_path, :implementation_root_path, :core_path, :public_path

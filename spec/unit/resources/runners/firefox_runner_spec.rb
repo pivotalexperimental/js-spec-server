@@ -61,7 +61,7 @@ module JsSpec
 
     describe "#start_browser" do
       it "starts a firefox browser in a thread" do
-        runner.command_for(:start_browser).should == "firefox -profile #{runner.profile_dir} http://localhost:8080/specs?guid=#{runner.guid}"
+        runner.command_for(:start_browser).should == "firefox -profile #{runner.profile_dir} #{Server.root_url}/specs?guid=#{runner.guid}"
       end
     end
   end
