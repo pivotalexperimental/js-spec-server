@@ -41,11 +41,6 @@ module JsSpec
       self.response = nil
     end
     
-    def run(path)
-      system(%{firefox "http://#{host}:#{port}/#{path}"})
-      Suite.new
-    end
-
     def request
       Thread.current[:request]
     end
