@@ -14,8 +14,8 @@ module JsSpec
       end
 
       it "initializes the RailsServer and runs the Mongrel Handler and sets Server.instance to the RailsServer instance" do
-        host = Server::DEFAULT_HOST
-        port = Server::DEFAULT_PORT
+        host = DEFAULT_HOST
+        port = DEFAULT_PORT
         server_instance = Object.new
         mock.proxy(RailsServer).new(
           rails_root,

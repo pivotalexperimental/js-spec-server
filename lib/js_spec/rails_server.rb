@@ -2,8 +2,8 @@ module JsSpec
   class RailsServer < Server
     class << self
       def run(rails_root, server_options = {})
-        server_options[:Host] ||= Server::DEFAULT_HOST
-        server_options[:Port] ||= Server::DEFAULT_PORT
+        server_options[:Host] ||= DEFAULT_HOST
+        server_options[:Port] ||= DEFAULT_PORT
         Server.instance = new(rails_root, server_options[:Host], server_options[:Port])
         Rack::Handler::Mongrel.run(Server.instance, server_options)
       end

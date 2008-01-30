@@ -9,7 +9,7 @@ module JsSpec
           mock(request).post("/runners/firefox", {})
           response = Object.new
           mock(response).body {""}
-          mock(Net::HTTP).start(JsSpec::Server::DEFAULT_HOST, JsSpec::Server::DEFAULT_PORT).yields(request) {response}
+          mock(Net::HTTP).start(JsSpec::DEFAULT_HOST, JsSpec::DEFAULT_PORT).yields(request) {response}
           stub(Client).puts
         end
         
@@ -29,7 +29,7 @@ module JsSpec
           mock(request).post("/runners/firefox", {})
           response = Object.new
           mock(response).body {"the failure message"}
-          mock(Net::HTTP).start(JsSpec::Server::DEFAULT_HOST, JsSpec::Server::DEFAULT_PORT).yields(request) {response}
+          mock(Net::HTTP).start(JsSpec::DEFAULT_HOST, JsSpec::DEFAULT_PORT).yields(request) {response}
           stub(Client).puts
         end
         

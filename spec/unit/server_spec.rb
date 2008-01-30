@@ -50,8 +50,8 @@ module JsSpec
       end
 
       it "instantiates an instance of Server and starts a Rack Mongrel handler" do
-        host = Server::DEFAULT_HOST
-        port = Server::DEFAULT_PORT
+        host = DEFAULT_HOST
+        port = DEFAULT_PORT
 
         mock.proxy(Server).new(spec_root_path, implementation_root_path, public_path, host, port) do
           server_instance
@@ -76,7 +76,7 @@ module JsSpec
 
     describe ".default_url" do
       it "returns the default host and port" do
-        Server.default_url.should == "http://#{Server::DEFAULT_HOST}:#{Server::DEFAULT_PORT}"
+        Server.default_url.should == "http://#{DEFAULT_HOST}:#{DEFAULT_PORT}"
       end
     end
 

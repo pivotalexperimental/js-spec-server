@@ -23,3 +23,8 @@ require "#{dir}/js_spec/resources/dir"
 require "#{dir}/js_spec/resources/web_root"
 require "#{dir}/js_spec/resources/suite"
 require "#{dir}/js_spec/resources/suite_finish"
+
+module JsSpec
+  DEFAULT_HOST = "127.0.0.1"
+  DEFAULT_PORT = 8080  
+end
