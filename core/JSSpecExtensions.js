@@ -4,7 +4,7 @@ function Spec() {
 Spec.register = function(spec_constructor) {
   spec_constructor['before each'] = function() {};
   spec_constructor['after each'] = function() {
-    reset_spec_environment();
+    Spec.reset();
   }
 
   spec_constructor.describe = function(context, definition) {
@@ -27,6 +27,8 @@ Spec.register = function(spec_constructor) {
     describe(this.constructor.name + context, definition);
   }
 }
+
+Spec.reset = function() {}
 
 var Assets = {
   require: function(path_from_javascripts, onload) {
