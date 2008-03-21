@@ -2,29 +2,34 @@ function Spec() {
 }
 
 Spec.register = function(spec_constructor) {
-  spec_constructor['before each'] = function() {};
-  spec_constructor['after each'] = function() {
-    Spec.reset();
-  }
-
   spec_constructor.describe = function(context, definition) {
     var custom_before = definition['before each'];
     if(custom_before) {
       definition['before each'] = function() {
-        spec_constructor['before each']();
+        if(spec_constructor['before each']) spec_constructor['before each']();
         custom_before();
       }
+    } else {
+      definition['before each'] = function() {
+        if(spec_constructor['before each']) spec_constructor['before each']();
+      };
     }
 
     var custom_after = definition['after each'];
     if(custom_after) {
       definition['after each'] = function() {
-        spec_constructor['after each']();
         custom_after();
+        if(spec_constructor['after each']) spec_constructor['after each']();
+        Spec.reset();
+      }
+    } else {
+      definition['after each'] = function() {
+        if(spec_constructor['after each']) spec_constructor['after each']();
+        Spec.reset();
       }
     }
     new spec_constructor();
-    describe(this.constructor.name + context, definition);
+    describe(spec_constructor.name.toString() + context.toString(), definition);
   }
 }
 
