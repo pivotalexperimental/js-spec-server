@@ -36,11 +36,6 @@ module Spec::Example::ExampleMethods
     @server = JsSpec::Server.instance
   end
 
-  after(:each) do
-    Thread.current[:request] = nil
-    Thread.current[:response] = nil
-  end
-
   def get(url, params={})
     request(:get, url, params)
   end
@@ -57,10 +52,11 @@ module Spec::Example::ExampleMethods
     request(:delete, url, params)
   end
 
-  def request(method, url, params={})
+  def create_request(method, url, params={})
     @request = Rack::MockRequest.new(server)
     @request.__send__(method, url, params)
   end
+  alias_method :request, :create_request
 
   def core_path
     JsSpec::Server.core_path

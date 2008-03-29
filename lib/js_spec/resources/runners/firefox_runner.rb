@@ -3,6 +3,15 @@ module JsSpec
     class Runners
       class FirefoxRunner
         class << self
+          def create(request, response)
+            version = `firefox --version`
+            if version =~ /Mozilla Firefox 3/
+              Firefox3Runner.new(request, response)
+            else
+              Firefox1Runner.new(request, response)
+            end
+          end
+
           def resume(guid, text)
             responses[guid] = text
             threads[guid].kill

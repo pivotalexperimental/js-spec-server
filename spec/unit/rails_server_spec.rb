@@ -16,15 +16,16 @@ module JsSpec
       it "initializes the RailsServer and runs the Mongrel Handler and sets Server.instance to the RailsServer instance" do
         host = DEFAULT_HOST
         port = DEFAULT_PORT
-        server_instance = Object.new
+        server_instance = nil
         mock.proxy(RailsServer).new(
           rails_root,
           host,
           port
         ) do |new_instance|
+          server_instance = new_instance
+          mock(Rack::Handler::Thin).run(server_instance, {:Host => host, :Port => port})
           server_instance
         end
-        mock(Rack::Handler::Mongrel).run(server_instance, {:Host => host, :Port => port})
 
         RailsServer.run(rails_root)
         Server.instance.should == server_instance

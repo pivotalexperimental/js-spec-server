@@ -1,6 +1,5 @@
 require "rubygems"
-require "rack"
-require "mongrel"
+require "thin"
 require "fileutils"
 require "tmpdir"
 require "timeout"
@@ -12,6 +11,8 @@ require "net/http"
 dir = File.dirname(__FILE__)
 require "#{dir}/js_spec/resources/runners"
 require "#{dir}/js_spec/resources/runners/firefox_runner"
+require "#{dir}/js_spec/resources/runners/firefox1_runner"
+require "#{dir}/js_spec/resources/runners/firefox3_runner"
 
 require "#{dir}/js_spec/client"
 require "#{dir}/js_spec/server"

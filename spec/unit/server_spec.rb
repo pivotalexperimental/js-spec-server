@@ -56,7 +56,7 @@ module JsSpec
         mock.proxy(Server).new(spec_root_path, implementation_root_path, public_path, host, port) do
           server_instance
         end
-        mock(Rack::Handler::Mongrel).run(server_instance, {:Host => host, :Port => port})
+        mock(Rack::Handler::Thin).run(server_instance, {:Host => host, :Port => port})
 
         Server.run(spec_root_path, implementation_root_path, public_path)
       end
@@ -68,7 +68,7 @@ module JsSpec
         mock.proxy(Server).new(spec_root_path, implementation_root_path, public_path, host, port) do
           server_instance
         end
-        mock(Rack::Handler::Mongrel).run(server_instance, {:Host => host, :Port => port})
+        mock(Rack::Handler::Thin).run(server_instance, {:Host => host, :Port => port})
 
         Server.run(spec_root_path, implementation_root_path, public_path, {:Host => host, :Port => port})
       end
@@ -106,74 +106,17 @@ module JsSpec
       end
     end
 
-    describe ".request" do
-      it "returns request in progress for the thread" do
-        the_request = nil
-        stub.instance_of(Resources::WebRoot).locate('somedir') do
-          the_request = JsSpec::Server.request
-          Thread.current[:request].should == the_request
-          thread2 = Thread.new do
-            Thread.current[:request].should be_nil
-          end
-          thread2.join
-
-          mock_resource = Object.new
-          stub(mock_resource).get.returns("")
-          mock_resource
-        end
-
-        get('/somedir')
-
-        the_request.path_info.should == '/somedir'
-      end
-
-      it "resets to nil when the request is finished" do
-        get('/core')
-
-        JsSpec::Server.request.should be_nil
-      end
-    end
-
-    describe ".response" do
-      it "returns response in progress" do
-        the_response = nil
-        stub.instance_of(Resources::WebRoot).locate('somedir') do
-          the_response = JsSpec::Server.response
-          Thread.current[:response].should == the_response
-          thread2 = Thread.new do
-            Thread.current[:response].should be_nil
-          end
-          thread2.join
-
-          mock_resource = Object.new
-          stub(mock_resource).get {"The text"}
-          mock_resource
-        end
-
-        get('/somedir')
-
-        the_response.body.should == 'The text'
-      end
-
-      it "resets to nil when the response is finished" do
-        get('/core')
-
-        JsSpec::Server.response.should be_nil
-      end
-    end
-
     describe "#call" do
-      it "when resource responds with a string, sets the string as the response.body" do
+      it "invokes the get method on the resource with the request and response" do
         somedir_resource = Object.new
         stub.instance_of(Resources::WebRoot).locate('somedir') do
           somedir_resource
         end
-
-        def somedir_resource.get
-          "Somedir String"
+        mock(somedir_resource).get(is_a(Rack::Request), is_a(Rack::Response)) do |request, response|
+          response.finish
         end
+
         response = get('/somedir')
-        response.body.should == "Somedir String"
       end
 
       describe "when there is an error" do
