@@ -2,21 +2,20 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../../unit_spec_helper")
 
 module JsSpec
   module Resources
-    describe Runners::Firefox1Runner do
+    describe Runners::Firefox3Runner do
       attr_reader :runner, :request, :response
       describe "#post" do
         attr_reader :firefox_profile_path
         before do
           @request = nil
           @response = nil
-          @runner = Runners::Firefox1Runner.new(request, response)
+          @runner = Runners::Firefox3Runner.new(request, response)
           dir = ::File.dirname(__FILE__)
           @firefox_profile_path = ::File.expand_path("#{dir}/../../../../../resources/firefox")
           ::File.should be_directory(firefox_profile_path)
         end
 
         it "returns ''" do
-          pending "reimplement when using nonblocking IO"
           guid = 'foobar'
           # stub.proxy(UUID).new {|guid| guid = guid}
           stub(runner).system {true}
@@ -26,9 +25,9 @@ module JsSpec
             post_return_value = runner.post
           end
           wait_for do
-            Runners::Firefox1Runner.threads[guid]
+            Runners::Firefox3Runner.threads[guid]
           end
-          Runners::Firefox1Runner.resume(guid, 'text from the browser')
+          Runners::Firefox3Runner.resume(guid, 'text from the browser')
 
           wait_for do
             post_return_value == 'text from the browser'
@@ -64,7 +63,7 @@ module JsSpec
           before do
             @request = nil
             @response = nil
-            @runner = Runners::Firefox1Runner.new(request, response)
+            @runner = Runners::Firefox3Runner.new(request, response)
           end
 
           it "starts a firefox browser in a thread" do
@@ -76,7 +75,7 @@ module JsSpec
           before do
             @request = Rack::MockRequest.new(server)
             @response = nil
-            @runner = Runners::Firefox1Runner.new(request, response)
+            @runner = Runners::Firefox3Runner.new(request, response)
           end
 
           describe ", and the request url parameter is not set" do
