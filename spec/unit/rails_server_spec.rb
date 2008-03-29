@@ -13,7 +13,7 @@ module JsSpec
         Server.instance = nil
       end
 
-      it "initializes the RailsServer and runs the Mongrel Handler and sets Server.instance to the RailsServer instance" do
+      it "initializes the RailsServer and runs the Thin Handler and sets Server.instance to the RailsServer instance" do
         host = DEFAULT_HOST
         port = DEFAULT_PORT
         server_instance = nil
@@ -23,10 +23,10 @@ module JsSpec
           port
         ) do |new_instance|
           server_instance = new_instance
-          mock(Rack::Handler::Thin).run(server_instance, {:Host => host, :Port => port})
-          server_instance
         end
 
+        mock(EventMachine).run.yields
+        mock(EventMachine).start_server(host, port, ::Thin::JsSpecConnection)
         RailsServer.run(rails_root)
         Server.instance.should == server_instance
       end

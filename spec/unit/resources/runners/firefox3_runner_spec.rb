@@ -16,6 +16,7 @@ module JsSpec
         end
 
         it "returns ''" do
+          pending "reimplement when using nonblocking IO"
           guid = 'foobar'
           # stub.proxy(UUID).new {|guid| guid = guid}
           stub(runner).system {true}

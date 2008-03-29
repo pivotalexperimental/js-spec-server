@@ -49,14 +49,12 @@ module JsSpec
         Server.instance = nil
       end
 
-      it "instantiates an instance of Server and starts a Rack Mongrel handler" do
+      it "instantiates an instance of Server and starts a Rack Thin handler" do
         host = DEFAULT_HOST
         port = DEFAULT_PORT
 
-        mock.proxy(Server).new(spec_root_path, implementation_root_path, public_path, host, port) do
-          server_instance
-        end
-        mock(Rack::Handler::Thin).run(server_instance, {:Host => host, :Port => port})
+        mock(EventMachine).run.yields
+        mock(EventMachine).start_server(host, port, ::Thin::JsSpecConnection)
 
         Server.run(spec_root_path, implementation_root_path, public_path)
       end
@@ -65,10 +63,8 @@ module JsSpec
         host = 'foobar.com'
         port = 80
 
-        mock.proxy(Server).new(spec_root_path, implementation_root_path, public_path, host, port) do
-          server_instance
-        end
-        mock(Rack::Handler::Thin).run(server_instance, {:Host => host, :Port => port})
+        mock(EventMachine).run.yields
+        mock(EventMachine).start_server(host, port, ::Thin::JsSpecConnection)
 
         Server.run(spec_root_path, implementation_root_path, public_path, {:Host => host, :Port => port})
       end

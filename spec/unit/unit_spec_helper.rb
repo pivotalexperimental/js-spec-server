@@ -33,6 +33,12 @@ module Spec::Example::ExampleMethods
 
   before(:each) do
     JsSpec::Server.instance = JsSpec::Server.new(spec_root_path, implementation_root_path, public_path)
+    stub(EventMachine).run do
+      raise "You need to mock calls to EventMachine.run or the process will hang"
+    end
+    stub(EventMachine).start_server do
+      raise "You need to mock calls to EventMachine.start_server or the process will hang"
+    end
     @server = JsSpec::Server.instance
   end
 
