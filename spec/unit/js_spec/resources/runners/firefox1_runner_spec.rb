@@ -1,4 +1,4 @@
-require File.expand_path("#{File.dirname(__FILE__)}/../../unit_spec_helper")
+require File.expand_path("#{File.dirname(__FILE__)}/../../../unit_spec_helper")
 
 module JsSpec
   module Resources
@@ -11,12 +11,11 @@ module JsSpec
           @response = nil
           @runner = Runners::Firefox1Runner.new(request, response)
           dir = ::File.dirname(__FILE__)
-          @firefox_profile_path = ::File.expand_path("#{dir}/../../../../resources/firefox")
+          @firefox_profile_path = ::File.expand_path("#{dir}/../../../../../resources/firefox")
           ::File.should be_directory(firefox_profile_path)
         end
 
         it "returns ''" do
-          pending "reimplement when using nonblocking IO"
           guid = 'foobar'
           # stub.proxy(UUID).new {|guid| guid = guid}
           stub(runner).system {true}
@@ -36,10 +35,10 @@ module JsSpec
         end
 
         it "copies the firefox profile files to a tmp directory " <<
-        "and initializes a profile " <<
-        "and tests that the profile is created " <<
-        "and starts firefox" <<
-        "and kills firefox" do
+          "and initializes a profile " <<
+          "and tests that the profile is created " <<
+          "and starts firefox" <<
+          "and kills firefox" do
           stub(runner).sleep
 
           mock(runner).system(runner.command_for(:copy_profile)).ordered {true}
@@ -66,7 +65,7 @@ module JsSpec
             @response = nil
             @runner = Runners::Firefox1Runner.new(request, response)
           end
-
+          
           it "starts a firefox browser in a thread" do
             runner.command_for(:start_browser).should == "firefox -profile '#{runner.profile_dir}' #{Server.root_url}/specs?guid=#{runner.guid}"
           end
@@ -95,7 +94,7 @@ module JsSpec
               @url = 'http://foobar.com/specs/foo/passing_spec'
               mock(request).[]('url') {url}.at_least(1)
             end
-
+            
             it "runs the Firefox Browser for the passed in url" do
               runner.command_for(:start_browser).should == "firefox -profile '#{runner.profile_dir}' #{url}?guid=#{runner.guid}"
             end

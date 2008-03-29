@@ -1,4 +1,4 @@
-require File.expand_path("#{File.dirname(__FILE__)}/unit_spec_helper")
+require File.expand_path("#{File.dirname(__FILE__)}/../unit_spec_helper")
 
 module JsSpec
   describe Server do
@@ -91,7 +91,7 @@ module JsSpec
     describe ".core_path" do
       it "returns the expanded path to the JsSpec core directory" do
         dir = ::File.dirname(__FILE__)
-        Server.core_path.should == ::File.expand_path("#{dir}/../../core")
+        Server.core_path.should == ::File.expand_path("#{dir}/../../../core")
       end
     end
 
