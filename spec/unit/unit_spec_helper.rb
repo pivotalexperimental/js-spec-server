@@ -39,6 +39,9 @@ module Spec::Example::ExampleMethods
     stub(EventMachine).start_server do
       raise "You need to mock calls to EventMachine.start_server or the process will hang"
     end
+    stub(EventMachine).send_data do
+      raise "Calls to EventMachine.send_data must be mocked or stubbed"
+    end
     @server = JsSpec::Server.instance
   end
 
