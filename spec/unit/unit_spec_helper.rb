@@ -62,8 +62,10 @@ module Spec::Example::ExampleMethods
   end
 
   def create_request(method, url, params={})
-    @request = Rack::MockRequest.new(server)
-    @request.__send__(method, url, params)
+    env = Rack::MockRequest.env_for(url, params.merge({:method => method.to_s.upcase}))
+    stub(connection = Thin::JsSpecConnection.new(UUID.new)).send_response
+    request, response = server.call(connection, env)
+    response
   end
   alias_method :request, :create_request
 

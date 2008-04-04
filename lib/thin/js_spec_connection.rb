@@ -1,15 +1,38 @@
 module Thin
   class JsSpecConnection < Connection
     def process
-      if @request.env['PATH_INFO'].split('/')[1] == 'servers'
-        # Add client info to the request env
-        @request.remote_address = remote_address
+      # Add client info to the request env
+      @request.remote_address = remote_address
 
-        # Process the request
-        @response.status, @response.headers, @response.body = @app.call(@request.env)
-      else
-        super
+      @app.call(self, @request.env)
+    rescue
+      handle_error
+    end
+
+    def send_response(status, headers, body)
+      @response.status, @response.headers, @response.body = status, headers, body
+      @response.persistent! if @request.persistent?
+      @response.each do |chunk|
+        trace { chunk }
+        send_data chunk
       end
+      # If no more request on that same connection, we close it.
+      close_connection_after_writing unless persistent?
+    rescue
+      handle_error
+    ensure
+      @request.close  rescue nil
+      @response.close rescue nil
+
+      # Prepare the connection for another request if the client
+      # supports HTTP pipelining (persistent connection).
+      post_init if persistent?
+    end
+
+    def handle_error
+      log "!! Unexpected error while processing request: #{$!.message}"
+      log_error
+      close_connection rescue nil
     end
   end
 end
