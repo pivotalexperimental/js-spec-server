@@ -14,6 +14,7 @@ module JsSpec
       def implementation_root_path; instance.implementation_root_path; end
       def public_path; instance.public_path; end
       def core_path; instance.core_path; end
+      def connection; instance.connection; end
       def request; instance.request; end
       def response; instance.response; end
       def root_url; instance.root_url; end
