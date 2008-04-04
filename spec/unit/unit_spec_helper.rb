@@ -22,8 +22,19 @@ module Spec
   end
 end
 
+class Spec::Example::ExampleGroup
+  class << self
+    def thin_logging
+      @thin_logging = true if @thin_logging.nil?
+      @thin_logging
+    end
+
+    attr_writer :thin_logging
+  end
+end
+
 module Spec::Example::ExampleMethods
-  attr_reader :spec_root_path, :implementation_root_path, :public_path, :server
+  attr_reader :spec_root_path, :implementation_root_path, :public_path, :server, :connection
   before(:all) do
     dir = File.dirname(__FILE__)
     @spec_root_path = File.expand_path("#{dir}/../example_specs")
@@ -42,7 +53,17 @@ module Spec::Example::ExampleMethods
     stub(EventMachine).send_data do
       raise "Calls to EventMachine.send_data must be mocked or stubbed"
     end
+    @connection = Thin::JsSpecConnection.new(UUID.new)
+    stub(EventMachine).send_data {raise "EventMachine.send_data must be handled"}
+    stub(EventMachine).close_connection {raise "EventMachine.close_connection must be handled"}
     @server = JsSpec::Server.instance
+    Thin::Logging.silent = !self.class.thin_logging
+    Thin::Logging.debug = self.class.thin_logging
+  end
+
+  after(:each) do
+    Thin::Logging.silent = true
+    Thin::Logging.debug = false
   end
 
   def get(url, params={})
@@ -63,7 +84,6 @@ module Spec::Example::ExampleMethods
 
   def create_request(method, url, params={})
     env = Rack::MockRequest.env_for(url, params.merge({:method => method.to_s.upcase}))
-    stub(connection = Thin::JsSpecConnection.new(UUID.new)).send_response
     request, response = server.call(connection, env)
     response
   end

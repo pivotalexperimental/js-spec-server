@@ -44,7 +44,7 @@ module JsSpec
       self.response = Rack::Response.new
       method = request.request_method.downcase.to_sym
       get_resource(request).send(method, request, response)
-      connection.send_response response.finish
+      connection.send_response *response.finish
       [request, response]
     ensure
       self.request = nil

@@ -2,21 +2,31 @@ require File.expand_path("#{File.dirname(__FILE__)}/../unit_spec_helper")
 
 module JsSpec
   describe Server do
+    attr_reader :result
+    
+    before do
+      @result = ""
+      stub(EventMachine).send_data do |signature, data, data_length|
+        @result << data
+      end
+      stub(EventMachine).close_connection
+    end
+
     describe "HTTP GET" do
       specify "'/specs' returns an HTML test runner including all specs files" do
-        result = get("/specs").body
+        get("/specs")
         result.should include('<script type="text/javascript" src="/specs/failing_spec.js"></script>')
         result.should include('<script type="text/javascript" src="/specs/foo/failing_spec.js"></script>')
         result.should include('<script type="text/javascript" src="/specs/foo/passing_spec.js"></script>')
       end
 
       specify "'/specs/failing_spec', returns an HTML test runner including it" do
-        result = get("/specs/failing_spec").body
+        get("/specs/failing_spec")
         result.should include('<script type="text/javascript" src="/specs/failing_spec.js"></script>')
       end
 
       specify "'/specs/foo', returns an HTML test runner including all specs below foo" do
-        result = get("/specs/foo").body
+        get("/specs/foo")
         result.should include('<script type="text/javascript" src="/specs/foo/failing_spec.js"></script>')
         result.should include('<script type="text/javascript" src="/specs/foo/passing_spec.js"></script>')
       end
@@ -103,16 +113,19 @@ module JsSpec
     end
 
     describe "#call" do
-      it "invokes the get method on the resource with the request and response" do
-        somedir_resource = Object.new
-        stub.instance_of(Resources::WebRoot).locate('somedir') do
-          somedir_resource
-        end
-        mock(somedir_resource).get(is_a(Rack::Request), is_a(Rack::Response)) do |request, response|
-          response.finish
-        end
+      describe "when the Rack Response is ready" do
+        it "invokes the get method on the resource with the request and response" do
+          somedir_resource = Object.new
+          stub.instance_of(Resources::WebRoot).locate('somedir') do
+            somedir_resource
+          end
+          mock(somedir_resource).get(is_a(Rack::Request), is_a(Rack::Response)) do |request, response|
+            response.status = 200
+            response.should be_ready
+          end
 
-        response = get('/somedir')
+          response = get('/somedir')
+        end
       end
 
       describe "when there is an error" do

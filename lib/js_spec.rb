@@ -7,10 +7,10 @@ require "uuid"
 require "cgi"
 require "net/http"
 
-
 dir = File.dirname(__FILE__)
-require "#{dir}/thin/js_spec_connection"
-require "#{dir}/thin/backends/js_spec_server"
+require "#{dir}/js_spec/thin/js_spec_connection"
+require "#{dir}/js_spec/thin/backends/js_spec_server"
+require "#{dir}/js_spec/rack/response"
 require "#{dir}/js_spec/resources/runners"
 require "#{dir}/js_spec/resources/runners/firefox_runner"
 require "#{dir}/js_spec/resources/runners/firefox1_runner"

@@ -6,6 +6,8 @@ module JsSpec
       attr_reader :dir, :runner
 
       before do
+        stub(EventMachine).send_data
+        stub(EventMachine).close_connection
         @dir = Dir.new(spec_root_path, '/specs')
         @runner = SpecDirRunner.new(dir)
       end

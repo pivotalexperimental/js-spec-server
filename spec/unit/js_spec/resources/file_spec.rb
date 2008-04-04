@@ -6,6 +6,8 @@ module JsSpec
     attr_reader :request, :file
 
     before do
+      stub(EventMachine).send_data
+      stub(EventMachine).close_connection
       @file = Resources::File.new(absolute_path, relative_path)
       @request = create_request('get', relative_path)
     end
