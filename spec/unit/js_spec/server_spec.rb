@@ -1,7 +1,17 @@
-require File.expand_path("#{File.dirname(__FILE__)}/unit_spec_helper")
+require File.expand_path("#{File.dirname(__FILE__)}/../unit_spec_helper")
 
 module JsSpec
   describe Server do
+    attr_reader :result
+    
+    before do
+      @result = ""
+      stub(EventMachine).send_data do |signature, data, data_length|
+        @result << data
+      end
+      stub(EventMachine).close_connection
+    end
+
     describe "HTTP GET" do
       specify "'/specs' returns an HTML test runner including all specs files" do
         result = get("/specs").body
@@ -26,13 +36,13 @@ module JsSpec
       end
 
       specify "'/core/JSSpec.js', returns the contents of the file" do
-        result = get("/core/JSSpec.js").body
-        result.should == ::File.read("#{Server.core_path}/JSSpec.js")
+        response = get("/core/JSSpec.js")
+        response.body.should == ::File.read("#{Server.core_path}/JSSpec.js")
       end
 
       specify "'/stylesheets/example.css', returns the contents of the file" do
-        result = get("/stylesheets/example.css").body
-        result.should == ::File.read("#{Server.public_path}/stylesheets/example.css")
+        response = get("/stylesheets/example.css")
+        response.body.should == ::File.read("#{Server.public_path}/stylesheets/example.css")
       end
 
       specify "'/invalid/path', shows the full invalid path in the error message" do
@@ -49,14 +59,12 @@ module JsSpec
         Server.instance = nil
       end
 
-      it "instantiates an instance of Server and starts a Rack Mongrel handler" do
+      it "instantiates an instance of Server and starts a Rack Thin handler" do
         host = DEFAULT_HOST
         port = DEFAULT_PORT
 
-        mock.proxy(Server).new(spec_root_path, implementation_root_path, public_path, host, port) do
-          server_instance
-        end
-        mock(Rack::Handler::Mongrel).run(server_instance, {:Host => host, :Port => port})
+        mock(EventMachine).run.yields
+        mock(EventMachine).start_server(host, port, ::Thin::JsSpecConnection)
 
         Server.run(spec_root_path, implementation_root_path, public_path)
       end
@@ -65,10 +73,8 @@ module JsSpec
         host = 'foobar.com'
         port = 80
 
-        mock.proxy(Server).new(spec_root_path, implementation_root_path, public_path, host, port) do
-          server_instance
-        end
-        mock(Rack::Handler::Mongrel).run(server_instance, {:Host => host, :Port => port})
+        mock(EventMachine).run.yields
+        mock(EventMachine).start_server(host, port, ::Thin::JsSpecConnection)
 
         Server.run(spec_root_path, implementation_root_path, public_path, {:Host => host, :Port => port})
       end
@@ -95,7 +101,7 @@ module JsSpec
     describe ".core_path" do
       it "returns the expanded path to the JsSpec core directory" do
         dir = ::File.dirname(__FILE__)
-        Server.core_path.should == ::File.expand_path("#{dir}/../../core")
+        Server.core_path.should == ::File.expand_path("#{dir}/../../../core")
       end
     end
 
@@ -106,76 +112,7 @@ module JsSpec
       end
     end
 
-    describe ".request" do
-      it "returns request in progress for the thread" do
-        the_request = nil
-        stub.instance_of(Resources::WebRoot).locate('somedir') do
-          the_request = JsSpec::Server.request
-          Thread.current[:request].should == the_request
-          thread2 = Thread.new do
-            Thread.current[:request].should be_nil
-          end
-          thread2.join
-
-          mock_resource = Object.new
-          stub(mock_resource).get.returns("")
-          mock_resource
-        end
-
-        get('/somedir')
-
-        the_request.path_info.should == '/somedir'
-      end
-
-      it "resets to nil when the request is finished" do
-        get('/core')
-
-        JsSpec::Server.request.should be_nil
-      end
-    end
-
-    describe ".response" do
-      it "returns response in progress" do
-        the_response = nil
-        stub.instance_of(Resources::WebRoot).locate('somedir') do
-          the_response = JsSpec::Server.response
-          Thread.current[:response].should == the_response
-          thread2 = Thread.new do
-            Thread.current[:response].should be_nil
-          end
-          thread2.join
-
-          mock_resource = Object.new
-          stub(mock_resource).get {"The text"}
-          mock_resource
-        end
-
-        get('/somedir')
-
-        the_response.body.should == 'The text'
-      end
-
-      it "resets to nil when the response is finished" do
-        get('/core')
-
-        JsSpec::Server.response.should be_nil
-      end
-    end
-
     describe "#call" do
-      it "when resource responds with a string, sets the string as the response.body" do
-        somedir_resource = Object.new
-        stub.instance_of(Resources::WebRoot).locate('somedir') do
-          somedir_resource
-        end
-
-        def somedir_resource.get
-          "Somedir String"
-        end
-        response = get('/somedir')
-        response.body.should == "Somedir String"
-      end
-
       describe "when there is an error" do
         attr_reader :top_line_of_backtrace
         before do

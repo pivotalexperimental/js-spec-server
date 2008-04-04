@@ -1,12 +1,15 @@
-require File.expand_path("#{File.dirname(__FILE__)}/../unit_spec_helper")
+require File.expand_path("#{File.dirname(__FILE__)}/../../unit_spec_helper")
 
 module JsSpec
   module Resources
     describe File do
-    attr_reader :file
+    attr_reader :request, :file
 
     before do
+      stub(EventMachine).send_data
+      stub(EventMachine).close_connection
       @file = Resources::File.new(absolute_path, relative_path)
+      @request = create_request('get', relative_path)
     end
 
     def absolute_path
@@ -33,24 +36,24 @@ module JsSpec
       attr_reader :response
       before do
         @response = Rack::Response.new
-        mock.proxy(Server).response.returns(@response)
       end
 
       it "returns the contents of the file" do
-        file.get.should == ::File.read(absolute_path)
+        file.get(request, response)
+        response.body.should == ::File.read(absolute_path)
       end
 
       describe "when File has an extension" do
         describe '.js' do
           it "sets Content-Type to text/javascript" do
-            file.get
+            file.get(request,response)
             response.content_type.should == "text/javascript"
           end
         end
 
         describe '.css' do
           it "sets Content-Type to text/css" do
-            file.get
+            file.get(request, response)
             response.content_type.should == "text/css"
           end
 

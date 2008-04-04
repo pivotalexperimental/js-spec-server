@@ -1,4 +1,4 @@
-require File.expand_path("#{File.dirname(__FILE__)}/unit_spec_helper")
+require File.expand_path("#{File.dirname(__FILE__)}/../unit_spec_helper")
 
 module JsSpec
   describe RailsServer do
@@ -13,19 +13,20 @@ module JsSpec
         Server.instance = nil
       end
 
-      it "initializes the RailsServer and runs the Mongrel Handler and sets Server.instance to the RailsServer instance" do
+      it "initializes the RailsServer and runs the Thin Handler and sets Server.instance to the RailsServer instance" do
         host = DEFAULT_HOST
         port = DEFAULT_PORT
-        server_instance = Object.new
+        server_instance = nil
         mock.proxy(RailsServer).new(
           rails_root,
           host,
           port
         ) do |new_instance|
-          server_instance
+          server_instance = new_instance
         end
-        mock(Rack::Handler::Mongrel).run(server_instance, {:Host => host, :Port => port})
 
+        mock(EventMachine).run.yields
+        mock(EventMachine).start_server(host, port, ::Thin::JsSpecConnection)
         RailsServer.run(rails_root)
         Server.instance.should == server_instance
       end

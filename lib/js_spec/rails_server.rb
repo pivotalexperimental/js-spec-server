@@ -5,7 +5,7 @@ module JsSpec
         server_options[:Host] ||= DEFAULT_HOST
         server_options[:Port] ||= DEFAULT_PORT
         Server.instance = new(rails_root, server_options[:Host], server_options[:Port])
-        Rack::Handler::Mongrel.run(Server.instance, server_options)
+        Server.instance.run server_options
       end
     end
 

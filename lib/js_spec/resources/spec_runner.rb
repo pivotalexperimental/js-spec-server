@@ -1,7 +1,7 @@
 module JsSpec
   module Resources
     class SpecRunner
-      def get
+      def get(request, response)
         html = <<-HTML
         <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
         <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
@@ -23,7 +23,7 @@ module JsSpec
         <body></body>
         </html>
         HTML
-        html.gsub(/^        /, "")
+        response.body = html.gsub(/^        /, "")
       end
     end
   end

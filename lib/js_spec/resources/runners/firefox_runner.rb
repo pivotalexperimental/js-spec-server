@@ -3,30 +3,32 @@ module JsSpec
     class Runners
       class FirefoxRunner
         class << self
+          def create(request, response)
+            version = `firefox --version`
+            if version =~ /Mozilla Firefox 3/
+              Firefox3Runner.new(request, response)
+            else
+              Firefox1Runner.new(request, response)
+            end
+          end
+
           def resume(guid, text)
-            responses[guid] = text
-            threads[guid].kill
+            runner = instances.delete(guid)
+            runner.finalize(text)
           end
 
-          def threads
-            @threads ||= {}
-          end
-
-          def response_value(guid)
-            responses[guid]
-          ensure
-            responses.delete guid
+          def register_instance(runner)
+            instances[runner.guid] = runner
           end
 
           protected
-
-          def responses
-            @responses ||= {}
+          def instances
+            @instances ||= {}
           end
         end
 
         include FileUtils
-        attr_reader :guid, :profile_dir, :request, :response
+        attr_reader :guid, :profile_dir, :request, :response, :connection
 
         def initialize(request, response)
           profile_base = "#{::Dir.tmpdir}/js_spec/firefox"
@@ -35,18 +37,21 @@ module JsSpec
           @guid = 'foobar'
           @request = request
           @response = response
+          @connection = Server.connection
         end
 
-        def post
+        def post(request, response)
+          FirefoxRunner.register_instance self
           setup_profile
+          start_browser
+          response.status = nil
+        end
 
-          browser_thread = start_browser
-          locking_thread = Thread.start {sleep}
-          self.class.threads[guid] = locking_thread
-          locking_thread.join
+        def finalize(text)
           kill_browser
-
-          self.class.response_value guid
+          response.status = 200
+          response.body = text
+          connection.send_response(*response.finish)
         end
 
         def command_for(action)

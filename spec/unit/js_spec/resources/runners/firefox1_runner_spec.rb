@@ -1,37 +1,33 @@
-require File.expand_path("#{File.dirname(__FILE__)}/../../unit_spec_helper")
+require File.expand_path("#{File.dirname(__FILE__)}/../../../unit_spec_helper")
 
 module JsSpec
   module Resources
-    describe Runners::FirefoxRunner do
+    describe Runners::Firefox1Runner do
       attr_reader :runner, :request, :response
+
+      before do
+        Thread.current[:connection] = connection
+      end
+
       describe "#post" do
         attr_reader :firefox_profile_path
         before do
-          @request = nil
-          @response = nil
-          @runner = Runners::FirefoxRunner.new(request, response)
+          @request = Rack::Request.new( Rack::MockRequest.env_for('/runners/firefox') )
+          @response = Rack::Response.new
+          @runner = Runners::Firefox1Runner.new(request, response)
           dir = ::File.dirname(__FILE__)
-          @firefox_profile_path = ::File.expand_path("#{dir}/../../../../resources/firefox")
+          @firefox_profile_path = ::File.expand_path("#{dir}/../../../../../resources/firefox")
           ::File.should be_directory(firefox_profile_path)
         end
 
-        it "returns ''" do
+        it "keeps the connection open" do
           guid = 'foobar'
-          # stub.proxy(UUID).new {|guid| guid = guid}
           stub(runner).system {true}
 
-          post_return_value = nil
-          Thread.start do
-            post_return_value = runner.post
-          end
-          wait_for do
-            Runners::FirefoxRunner.threads[guid]
-          end
-          Runners::FirefoxRunner.resume(guid, 'text from the browser')
-
-          wait_for do
-            post_return_value == 'text from the browser'
-          end
+          dont_allow(EventMachine).send_data
+          dont_allow(EventMachine).close_connection
+          runner.post(request, response)
+          response.should_not be_ready
         end
 
         it "copies the firefox profile files to a tmp directory " <<
@@ -45,8 +41,7 @@ module JsSpec
           mock(runner).system(runner.command_for(:init_profile)).ordered {true}
           mock(runner).system(runner.command_for(:test_profile)).ordered {true}
           mock(runner).system(runner.command_for(:start_browser)).ordered {true}
-          mock(runner).system(runner.command_for(:kill_browser)).ordered {true}
-          runner.post
+          runner.post(request, response)
         end
 
         def wait_for(timeout=5)
@@ -58,29 +53,46 @@ module JsSpec
         end
       end
 
+      describe "#finalize" do
+        before do
+          @request = Rack::Request.new( Rack::MockRequest.env_for('/runners/firefox') )
+          @response = Rack::Response.new
+          @runner = Runners::Firefox1Runner.new(request, response)
+        end
+
+        it "kills the browser, sends the response body, and close the connection" do
+          mock(runner).system(runner.command_for(:kill_browser)).ordered {true}
+          data = ""
+          stub(EventMachine).send_data do |signature, data, data_length|
+            data << data
+          end
+          mock(connection).close_connection_after_writing
+
+          runner.finalize("The text")
+          data.should include("The text")
+        end
+      end
+
       describe "#start_browser" do
         describe "when there is no current request" do
           before do
             @request = nil
             @response = nil
-            @runner = Runners::FirefoxRunner.new(request, response)
+            @runner = Runners::Firefox1Runner.new(request, response)
           end
-          
+
           it "starts a firefox browser in a thread" do
             runner.command_for(:start_browser).should == "firefox -profile '#{runner.profile_dir}' #{Server.root_url}/specs?guid=#{runner.guid}"
           end
         end
 
         describe "when there is a current request" do
-          before do
-            @request = Rack::MockRequest.new(server)
-            @response = nil
-            @runner = Runners::FirefoxRunner.new(request, response)
-          end
-
           describe ", and the request url parameter is not set" do
             before do
-              mock(request).[]('url') {nil}
+              @request = Rack::Request.new(Rack::MockRequest.env_for('/runners/firefox'))
+              @response = nil
+              @runner = Runners::Firefox1Runner.new(request, response)
+              request['url'].should be_nil
             end
 
             it "starts a firefox browser in a thread" do
@@ -91,10 +103,13 @@ module JsSpec
           describe ", and the request url parameter is set" do
             attr_reader :url
             before do
-              @url = 'http://foobar.com/specs/foo/passing_spec'
-              mock(request).[]('url') {url}.at_least(1)
+              @url = 'http://example.org/specs/foo/passing_spec'
+              @request = Rack::Request.new(Rack::MockRequest.env_for("/runners/firefox?url=#{url}"))
+              @response = nil
+              @runner = Runners::Firefox1Runner.new(request, response)
+              request['url'].should == url
             end
-            
+
             it "runs the Firefox Browser for the passed in url" do
               runner.command_for(:start_browser).should == "firefox -profile '#{runner.profile_dir}' #{url}?guid=#{runner.guid}"
             end

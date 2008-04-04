@@ -7,13 +7,14 @@ module JsSpec
         server_options[:Host] ||= DEFAULT_HOST
         server_options[:Port] ||= DEFAULT_PORT
         @instance = new(spec_root_path, implementation_root_path, public_path, server_options[:Host], server_options[:Port])
-        Rack::Handler::Mongrel.run(instance, server_options)
+        instance.run server_options
       end
 
       def spec_root_path; instance.spec_root_path; end
       def implementation_root_path; instance.implementation_root_path; end
       def public_path; instance.public_path; end
       def core_path; instance.core_path; end
+      def connection; instance.connection; end
       def request; instance.request; end
       def response; instance.response; end
       def root_url; instance.root_url; end
@@ -30,18 +31,32 @@ module JsSpec
       @host = host
       @port = port
     end
-    
+
+    def run(options)
+      ::Thin::Server.start(
+        ::Thin::Backends::JsSpecServer.new(options[:Host], options[:Port]),
+        options[:Port],
+        self
+      )
+    end
+
     def call(env)
+      self.connection = env['js_spec.connection']
       self.request = Rack::Request.new(env)
       self.response = Rack::Response.new
       method = request.request_method.downcase.to_sym
-      response.body = get_resource.send(method)
+      get_resource(request).send(method, request, response)
       response.finish
     ensure
+      self.connection = nil
       self.request = nil
       self.response = nil
     end
-    
+
+    def connection
+      Thread.current[:connection]
+    end
+
     def request
       Thread.current[:request]
     end
@@ -55,6 +70,10 @@ module JsSpec
     end
     
     protected
+    def connection=(connection)
+      Thread.current[:connection] = connection
+    end
+
     def request=(request)
       Thread.current[:request] = request
     end
@@ -63,12 +82,12 @@ module JsSpec
       Thread.current[:response] = response
     end
 
-    def path_parts
+    def path_parts(req)
       request.path_info.split('/').reject { |part| part == "" }
     end
 
-    def get_resource
-      path_parts.inject(Resources::WebRoot.new(public_path)) do |resource, child_resource_name|
+    def get_resource(request)
+      path_parts(request).inject(Resources::WebRoot.new(public_path)) do |resource, child_resource_name|
         resource.locate(child_resource_name)
       end
     rescue Exception => e
