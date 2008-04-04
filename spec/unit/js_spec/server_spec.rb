@@ -114,17 +114,44 @@ module JsSpec
 
     describe "#call" do
       describe "when the Rack Response is ready" do
-        it "invokes the get method on the resource with the request and response" do
-          somedir_resource = Object.new
+        attr_reader :somedir_resource
+        before do
+          @somedir_resource = Object.new
           stub.instance_of(Resources::WebRoot).locate('somedir') do
             somedir_resource
           end
           mock(somedir_resource).get(is_a(Rack::Request), is_a(Rack::Response)) do |request, response|
             response.status = 200
             response.should be_ready
+            response.body = "The Body"
           end
+        end
 
-          response = get('/somedir')
+        it "sends the response to the socket and closes the connection" do
+          mock(connection).close_connection_after_writing
+          get('/somedir')
+          result.should include("The Body")
+        end
+      end
+
+      describe "when the Rack Response is not ready" do
+        attr_reader :somedir_resource
+        before do
+          @somedir_resource = Object.new
+          stub.instance_of(Resources::WebRoot).locate('somedir') do
+            somedir_resource
+          end
+          mock(somedir_resource).get(is_a(Rack::Request), is_a(Rack::Response)) do |request, response|
+            response.status = nil
+            response.should_not be_ready
+            response.body = "The Body"
+          end
+        end
+
+        it "does not send data to the socket and keeps it open" do
+          dont_allow(connection).close_connection_after_writing
+          get('/somedir')
+          result.should_not include("The Body")
         end
       end
 

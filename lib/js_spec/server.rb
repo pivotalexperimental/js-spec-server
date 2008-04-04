@@ -40,17 +40,24 @@ module JsSpec
     end
     
     def call(connection, env)
+      self.connection = connection
       self.request = Rack::Request.new(env)
       self.response = Rack::Response.new
       method = request.request_method.downcase.to_sym
       get_resource(request).send(method, request, response)
-      connection.send_response *response.finish
+      if response.ready?
+        connection.send_response *response.finish
+      end
       [request, response]
     ensure
       self.request = nil
       self.response = nil
     end
-    
+
+    def connection
+      Thread.current[:connection]
+    end
+
     def request
       Thread.current[:request]
     end
@@ -64,6 +71,10 @@ module JsSpec
     end
     
     protected
+    def connection=(connection)
+      Thread.current[:connection] = connection
+    end
+
     def request=(request)
       Thread.current[:request] = request
     end
