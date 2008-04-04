@@ -1,5 +1,5 @@
 module JsSpec
-  class RailsServer < JsSpecConnection
+  class RailsJsSpecConnection < JsSpecConnection
     class << self
       def run(rails_root, server_options = {})
         server_options[:Host] ||= DEFAULT_HOST

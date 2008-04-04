@@ -1,9 +1,9 @@
 require File.expand_path("#{File.dirname(__FILE__)}/../unit_spec_helper")
 
 module JsSpec
-  describe RailsServer do
+  describe RailsJsSpecConnection do
     it "subclasses JsSpecConnection" do
-      RailsServer.superclass.should == JsSpecConnection
+      RailsJsSpecConnection.superclass.should == JsSpecConnection
     end
 
     describe ".run" do
@@ -13,11 +13,11 @@ module JsSpec
         JsSpecConnection.instance = nil
       end
 
-      it "initializes the RailsServer and runs the Thin Handler and sets JsSpecConnection.instance to the RailsServer instance" do
+      it "initializes the RailsJsSpecConnection and runs the Thin Handler and sets JsSpecConnection.instance to the RailsJsSpecConnection instance" do
         host = DEFAULT_HOST
         port = DEFAULT_PORT
         server_instance = nil
-        mock.proxy(RailsServer).new(
+        mock.proxy(RailsJsSpecConnection).new(
           rails_root,
           host,
           port
@@ -27,7 +27,7 @@ module JsSpec
 
         mock(EventMachine).run.yields
         mock(EventMachine).start_server(host, port, ::Thin::JsSpecConnection)
-        RailsServer.run(rails_root)
+        RailsJsSpecConnection.run(rails_root)
         JsSpecConnection.instance.should == server_instance
       end
     end
@@ -35,7 +35,7 @@ module JsSpec
     describe "#initialize" do
       it "sets the server paths based on the passed in rails root" do
         rails_root = "/rails/root"
-        server = RailsServer.new(rails_root)
+        server = RailsJsSpecConnection.new(rails_root)
         server.spec_root_path.should == "#{rails_root}/spec/javascripts"
         server.implementation_root_path.should == "#{rails_root}/public/javascripts"
         server.public_path.should == "#{rails_root}/public"
