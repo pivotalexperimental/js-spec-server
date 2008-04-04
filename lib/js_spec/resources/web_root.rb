@@ -9,11 +9,11 @@ module JsSpec
       def locate(name)
         case name
         when 'specs'
-          Resources::Dir.new(JsSpec::Server.spec_root_path, "/specs")
+          Resources::Dir.new(JsSpec::JsSpecConnection.spec_root_path, "/specs")
         when 'core'
-          Resources::Dir.new(JsSpec::Server.core_path, "/core")
+          Resources::Dir.new(JsSpec::JsSpecConnection.core_path, "/core")
         when 'implementations'
-          Resources::Dir.new(JsSpec::Server.implementation_root_path, "/implementations")
+          Resources::Dir.new(JsSpec::JsSpecConnection.implementation_root_path, "/implementations")
         when 'suites'
           Resources::Suite
         when 'runners'

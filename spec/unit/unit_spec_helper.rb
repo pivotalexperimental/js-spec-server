@@ -32,7 +32,7 @@ module Spec::Example::ExampleMethods
   end
 
   before(:each) do
-    JsSpec::Server.instance = JsSpec::Server.new(spec_root_path, implementation_root_path, public_path)
+    JsSpec::JsSpecConnection.instance = JsSpec::JsSpecConnection.new(spec_root_path, implementation_root_path, public_path)
     stub(EventMachine).run do
       raise "You need to mock calls to EventMachine.run or the process will hang"
     end
@@ -42,7 +42,7 @@ module Spec::Example::ExampleMethods
     stub(EventMachine).send_data do
       raise "Calls to EventMachine.send_data must be mocked or stubbed"
     end
-    @server = JsSpec::Server.instance
+    @server = JsSpec::JsSpecConnection.instance
   end
 
   def get(url, params={})
@@ -68,7 +68,7 @@ module Spec::Example::ExampleMethods
   alias_method :request, :create_request
 
   def core_path
-    JsSpec::Server.core_path
+    JsSpec::JsSpecConnection.core_path
   end
 
   def spec_file(relative_path)

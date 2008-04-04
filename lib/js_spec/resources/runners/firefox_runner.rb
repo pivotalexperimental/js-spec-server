@@ -72,7 +72,7 @@ module JsSpec
         protected
 
         def spec_suite_url
-          "#{Server.root_url}/specs"
+          "#{JsSpecConnection.root_url}/specs"
         end
 
         def setup_profile

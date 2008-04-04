@@ -2,18 +2,18 @@ require File.expand_path("#{File.dirname(__FILE__)}/../unit_spec_helper")
 
 module JsSpec
   describe RailsServer do
-    it "subclasses Server" do
-      RailsServer.superclass.should == Server
+    it "subclasses JsSpecConnection" do
+      RailsServer.superclass.should == JsSpecConnection
     end
 
     describe ".run" do
       attr_reader :rails_root
       before do
         @rails_root = "/rails/root"
-        Server.instance = nil
+        JsSpecConnection.instance = nil
       end
 
-      it "initializes the RailsServer and runs the Thin Handler and sets Server.instance to the RailsServer instance" do
+      it "initializes the RailsServer and runs the Thin Handler and sets JsSpecConnection.instance to the RailsServer instance" do
         host = DEFAULT_HOST
         port = DEFAULT_PORT
         server_instance = nil
@@ -28,7 +28,7 @@ module JsSpec
         mock(EventMachine).run.yields
         mock(EventMachine).start_server(host, port, ::Thin::JsSpecConnection)
         RailsServer.run(rails_root)
-        Server.instance.should == server_instance
+        JsSpecConnection.instance.should == server_instance
       end
     end
 

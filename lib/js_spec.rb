@@ -17,7 +17,7 @@ require "#{dir}/js_spec/resources/runners/firefox1_runner"
 require "#{dir}/js_spec/resources/runners/firefox3_runner"
 
 require "#{dir}/js_spec/client"
-require "#{dir}/js_spec/server"
+require "#{dir}/js_spec/js_spec_connection"
 require "#{dir}/js_spec/rails_server"
 require "#{dir}/js_spec/resources/spec_runner"
 require "#{dir}/js_spec/resources/spec_file_runner"

@@ -21,7 +21,7 @@ module JsSpec
           body = "The text in the POST body"
           request = Rack::Request.new({'rack.input' => StringIO.new("text=#{body}")})
           request.body.string.should == "text=#{body}"
-          stub.proxy(Server).request {request}
+          stub.proxy(JsSpecConnection).request {request}
 
           suite_finish.post
           stdout.string.should == "#{body}\n"
@@ -31,7 +31,7 @@ module JsSpec
           body = "The text in the POST body"
           request = Rack::Request.new({'rack.input' => StringIO.new("text=#{body}")})
           request.body.string.should == "text=#{body}"
-          stub.proxy(Server).request {request}
+          stub.proxy(JsSpecConnection).request {request}
 
           suite_finish.post.should == ""
         end

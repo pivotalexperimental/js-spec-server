@@ -15,4 +15,4 @@ module Spec::Example::ExampleMethods
   end
 end
 
-#JsSpec::Server.run
+#JsSpec::JsSpecConnection.run

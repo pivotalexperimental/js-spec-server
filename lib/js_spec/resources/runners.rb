@@ -5,7 +5,7 @@ module JsSpec
     class Runners
       def locate(name)
         if name == 'firefox'
-          FirefoxRunner.create(Server.request, Server.response)
+          FirefoxRunner.create(JsSpecConnection.request, JsSpecConnection.response)
         else
           raise "Invalid path #{name}"
         end

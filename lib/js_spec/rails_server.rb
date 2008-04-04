@@ -1,11 +1,11 @@
 module JsSpec
-  class RailsServer < Server
+  class RailsServer < JsSpecConnection
     class << self
       def run(rails_root, server_options = {})
         server_options[:Host] ||= DEFAULT_HOST
         server_options[:Port] ||= DEFAULT_PORT
-        Server.instance = new(rails_root, server_options[:Host], server_options[:Port])
-        Server.instance.run server_options
+        JsSpecConnection.instance = new(rails_root, server_options[:Host], server_options[:Port])
+        JsSpecConnection.instance.run server_options
       end
     end
 

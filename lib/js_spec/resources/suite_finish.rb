@@ -7,11 +7,11 @@ module JsSpec
       end
 
       def post
-        guid = Server.request['guid']
+        guid = JsSpecConnection.request['guid']
         if guid
-          Runners::FirefoxRunner.resume(guid, Server.request['text'])
+          Runners::FirefoxRunner.resume(guid, JsSpecConnection.request['text'])
         else
-          STDOUT.puts Server.request['text']
+          STDOUT.puts JsSpecConnection.request['text']
         end
         ""
       end
