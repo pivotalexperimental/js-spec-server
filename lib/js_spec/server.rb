@@ -1,5 +1,5 @@
 module JsSpec
-  class JsSpecConnection
+  class Server
     class << self
       attr_accessor :instance
 

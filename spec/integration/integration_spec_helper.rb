@@ -20,7 +20,7 @@ module Spec::Example::ExampleMethods
     @implementation_root_path = "#{public_path}/javascripts"
     unless $js_spec_server_started
       Thread.start do
-        JsSpec::JsSpecConnection.run(spec_root_path, implementation_root_path, public_path)
+        JsSpec::Server.run(spec_root_path, implementation_root_path, public_path)
       end
       $js_spec_server_started = true
     end

@@ -16,12 +16,12 @@ module JsSpec
 
         it "when passed 'core', returns a Dir representing the JsSpec core directory" do
           runner = web_root.locate('core')
-          runner.should == Resources::Dir.new(JsSpec::JsSpecConnection.core_path, '/core')
+          runner.should == Resources::Dir.new(JsSpec::Server.core_path, '/core')
         end
 
         it "when passed 'implementations', returns a Dir representing the javascript implementations directory" do
           runner = web_root.locate('implementations')
-          runner.should == Resources::Dir.new(JsSpec::JsSpecConnection.implementation_root_path, '/implementations')
+          runner.should == Resources::Dir.new(JsSpec::Server.implementation_root_path, '/implementations')
         end
 
         it "when passed 'results', returns a Suite" do
@@ -36,12 +36,12 @@ module JsSpec
 
         it "when passed a directory that is in the public_path, returns a Dir representing that directory" do
           runner = web_root.locate('stylesheets')
-          runner.should == Resources::Dir.new("#{JsSpec::JsSpecConnection.public_path}/stylesheets", '/stylesheets')
+          runner.should == Resources::Dir.new("#{JsSpec::Server.public_path}/stylesheets", '/stylesheets')
         end
 
         it "when passed a file that is in the public_path, returns a File representing that file" do
           runner = web_root.locate('robots.txt')
-          runner.should == Resources::File.new("#{JsSpec::JsSpecConnection.public_path}/robots.txt", '/robots.txt')
+          runner.should == Resources::File.new("#{JsSpec::Server.public_path}/robots.txt", '/robots.txt')
         end
 
         it "when not passed 'core' or 'specs', raises an error" do

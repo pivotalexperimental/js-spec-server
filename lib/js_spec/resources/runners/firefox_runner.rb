@@ -13,17 +13,24 @@ module JsSpec
           end
 
           def resume(guid, text)
-            runner = instances.delete(guid)
-            runner.finalize(text)
+            responses[guid] = text
+            threads[guid].kill
           end
 
-          def register_instance(runner)
-            instances[runner.guid] = runner
+          def threads
+            @threads ||= {}
+          end
+
+          def response_value(guid)
+            responses[guid]
+          ensure
+            responses.delete guid
           end
 
           protected
-          def instances
-            @connections ||= {}
+
+          def responses
+            @responses ||= {}
           end
         end
 
@@ -40,14 +47,15 @@ module JsSpec
         end
 
         def post
-          self.class.register_instance self
           setup_profile
-          start_browser
-        end
 
-        def finalize(text)
+          browser_thread = start_browser
+          locking_thread = Thread.start {sleep}
+          self.class.threads[guid] = locking_thread
+          locking_thread.join
           kill_browser
-          response.body = text
+
+          self.class.response_value guid
         end
 
         def command_for(action)
@@ -72,7 +80,7 @@ module JsSpec
         protected
 
         def spec_suite_url
-          "#{JsSpecConnection.root_url}/specs"
+          "#{Server.root_url}/specs"
         end
 
         def setup_profile
