@@ -6,12 +6,29 @@ require "spec"
 $LOAD_PATH.unshift "#{dir}/../../lib"
 require "js_spec"
 require "hpricot"
+require "lsof"
 
 Spec::Runner.configure do |config|
   config.mock_with :rr
 end
 
+Thin::Logging.silent = false
+Thin::Logging.debug = true
+
+module WaitFor
+  extend self
+  def wait_for(time=5)
+    Timeout.timeout(time) do
+      loop do
+        value = yield
+        return value if value
+      end
+    end
+  end
+end
+
 module Spec::Example::ExampleMethods
+  include WaitFor
   attr_reader :spec_root_path, :implementation_root_path, :public_path
   before(:all) do
     dir = File.dirname(__FILE__)
@@ -23,6 +40,9 @@ module Spec::Example::ExampleMethods
         JsSpec::Server.run(spec_root_path, implementation_root_path, public_path)
       end
       $js_spec_server_started = true
+    end
+    wait_for do
+      Lsof.running?(8080)
     end
   end
 

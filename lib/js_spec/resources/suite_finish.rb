@@ -6,12 +6,12 @@ module JsSpec
         @suite = suite
       end
 
-      def post
-        guid = Server.request['guid']
+      def post(request, response)
+        guid = request['guid']
         if guid
-          Runners::FirefoxRunner.resume(guid, Server.request['text'])
+          Runners::FirefoxRunner.resume(guid, request['text'])
         else
-          STDOUT.puts Server.request['text']
+          STDOUT.puts request['text']
         end
         ""
       end

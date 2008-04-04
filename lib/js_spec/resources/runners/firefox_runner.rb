@@ -23,12 +23,12 @@ module JsSpec
 
           protected
           def instances
-            @connections ||= {}
+            @instances ||= {}
           end
         end
 
         include FileUtils
-        attr_reader :guid, :profile_dir, :request, :response
+        attr_reader :guid, :profile_dir, :request, :response, :connection
 
         def initialize(request, response)
           profile_base = "#{::Dir.tmpdir}/js_spec/firefox"
@@ -37,17 +37,21 @@ module JsSpec
           @guid = 'foobar'
           @request = request
           @response = response
+          @connection = Server.connection
         end
 
-        def post
-          self.class.register_instance self
+        def post(request, response)
+          FirefoxRunner.register_instance self
           setup_profile
           start_browser
+          response.status = nil
         end
 
         def finalize(text)
           kill_browser
+          response.status = 200
           response.body = text
+          connection.send_response(*response.finish)
         end
 
         def command_for(action)

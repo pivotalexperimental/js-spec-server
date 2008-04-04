@@ -14,19 +14,19 @@ module JsSpec
 
     describe "HTTP GET" do
       specify "'/specs' returns an HTML test runner including all specs files" do
-        get("/specs")
+        result = get("/specs").body
         result.should include('<script type="text/javascript" src="/specs/failing_spec.js"></script>')
         result.should include('<script type="text/javascript" src="/specs/foo/failing_spec.js"></script>')
         result.should include('<script type="text/javascript" src="/specs/foo/passing_spec.js"></script>')
       end
 
       specify "'/specs/failing_spec', returns an HTML test runner including it" do
-        get("/specs/failing_spec")
+        result = get("/specs/failing_spec").body
         result.should include('<script type="text/javascript" src="/specs/failing_spec.js"></script>')
       end
 
       specify "'/specs/foo', returns an HTML test runner including all specs below foo" do
-        get("/specs/foo")
+        result = get("/specs/foo").body
         result.should include('<script type="text/javascript" src="/specs/foo/failing_spec.js"></script>')
         result.should include('<script type="text/javascript" src="/specs/foo/passing_spec.js"></script>')
       end
@@ -36,13 +36,13 @@ module JsSpec
       end
 
       specify "'/core/JSSpec.js', returns the contents of the file" do
-        result = get("/core/JSSpec.js").body
-        result.should == ::File.read("#{Server.core_path}/JSSpec.js")
+        response = get("/core/JSSpec.js")
+        response.body.should == ::File.read("#{Server.core_path}/JSSpec.js")
       end
 
       specify "'/stylesheets/example.css', returns the contents of the file" do
-        result = get("/stylesheets/example.css").body
-        result.should == ::File.read("#{Server.public_path}/stylesheets/example.css")
+        response = get("/stylesheets/example.css")
+        response.body.should == ::File.read("#{Server.public_path}/stylesheets/example.css")
       end
 
       specify "'/invalid/path', shows the full invalid path in the error message" do
@@ -113,48 +113,6 @@ module JsSpec
     end
 
     describe "#call" do
-      describe "when the Rack Response is ready" do
-        attr_reader :somedir_resource
-        before do
-          @somedir_resource = Object.new
-          stub.instance_of(Resources::WebRoot).locate('somedir') do
-            somedir_resource
-          end
-          mock(somedir_resource).get(is_a(Rack::Request), is_a(Rack::Response)) do |request, response|
-            response.status = 200
-            response.should be_ready
-            response.body = "The Body"
-          end
-        end
-
-        it "sends the response to the socket and closes the connection" do
-          mock(connection).close_connection_after_writing
-          get('/somedir')
-          result.should include("The Body")
-        end
-      end
-
-      describe "when the Rack Response is not ready" do
-        attr_reader :somedir_resource
-        before do
-          @somedir_resource = Object.new
-          stub.instance_of(Resources::WebRoot).locate('somedir') do
-            somedir_resource
-          end
-          mock(somedir_resource).get(is_a(Rack::Request), is_a(Rack::Response)) do |request, response|
-            response.status = nil
-            response.should_not be_ready
-            response.body = "The Body"
-          end
-        end
-
-        it "does not send data to the socket and keeps it open" do
-          dont_allow(connection).close_connection_after_writing
-          get('/somedir')
-          result.should_not include("The Body")
-        end
-      end
-
       describe "when there is an error" do
         attr_reader :top_line_of_backtrace
         before do

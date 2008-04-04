@@ -82,10 +82,13 @@ module Spec::Example::ExampleMethods
     request(:delete, url, params)
   end
 
+  def env_for(method, url, params)
+    Rack::MockRequest.env_for(url, params.merge({:method => method.to_s.upcase, 'js_spec.connection' => connection}))
+  end
+
   def create_request(method, url, params={})
-    env = Rack::MockRequest.env_for(url, params.merge({:method => method.to_s.upcase}))
-    request, response = server.call(connection, env)
-    response
+    env = env_for(method, url, params)
+    server.call(env)[2]
   end
   alias_method :request, :create_request
 

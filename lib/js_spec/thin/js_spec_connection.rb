@@ -4,7 +4,12 @@ module Thin
       # Add client info to the request env
       @request.remote_address = remote_address
 
-      @app.call(self, @request.env)
+      env = @request.env
+      env['js_spec.connection'] = self
+      status, headers, body = @app.call(env)
+      unless status.to_i == 0
+        send_response(status, headers, body)
+      end
     rescue
       handle_error
     end

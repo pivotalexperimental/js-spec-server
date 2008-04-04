@@ -4,6 +4,11 @@ module JsSpec
   module Resources
     describe Runners::Firefox1Runner do
       attr_reader :runner, :request, :response
+
+      before do
+        Thread.current[:connection] = connection
+      end
+
       describe "#post" do
         attr_reader :firefox_profile_path
         before do
@@ -15,14 +20,14 @@ module JsSpec
           ::File.should be_directory(firefox_profile_path)
         end
 
-        it "returns ''" do
+        it "keeps the connection open" do
           guid = 'foobar'
           stub(runner).system {true}
 
-          runner.post
-          Runners::Firefox1Runner.resume(guid, 'text from the browser')
-
-          response.body.should == 'text from the browser'
+          dont_allow(EventMachine).send_data
+          dont_allow(EventMachine).close_connection
+          runner.post(request, response)
+          response.should_not be_ready
         end
 
         it "copies the firefox profile files to a tmp directory " <<
@@ -36,7 +41,7 @@ module JsSpec
           mock(runner).system(runner.command_for(:init_profile)).ordered {true}
           mock(runner).system(runner.command_for(:test_profile)).ordered {true}
           mock(runner).system(runner.command_for(:start_browser)).ordered {true}
-          runner.post
+          runner.post(request, response)
         end
 
         def wait_for(timeout=5)
@@ -55,9 +60,16 @@ module JsSpec
           @runner = Runners::Firefox1Runner.new(request, response)
         end
 
-        it "kills the browser and sets the response body" do
+        it "kills the browser, sends the response body, and close the connection" do
           mock(runner).system(runner.command_for(:kill_browser)).ordered {true}
+          data = ""
+          stub(EventMachine).send_data do |signature, data, data_length|
+            data << data
+          end
+          mock(connection).close_connection_after_writing
+
           runner.finalize("The text")
+          data.should include("The text")
         end
       end
 
