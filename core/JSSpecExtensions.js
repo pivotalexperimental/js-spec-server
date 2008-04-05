@@ -91,25 +91,13 @@ function parse_url(url) {
 JSSpec.Logger.prototype.onRunnerEndWithoutServerNotification = JSSpec.Logger.prototype.onRunnerEnd;
 JSSpec.Logger.prototype.onRunnerEndWithServerNotification = function() {
   this.onRunnerEndWithoutServerNotification();
-  var data = {
-    'text': this.get_error_message_text(),
-    'guid': 'foobar'
-  };
-
-  // current_location_params = parse_url(window.location.href);
-  // if(current_location_params.guid) {
-  //   data.guid = 'foobar'; // current_location_params.guid;
-  // }
-  var post_args = {
-    type: 'POST',
-    url: '/suites/1/finish',
-    data: data
-  };
-  if(jQuery.realAjax) {
-    jQuery.realAjax(post_args);
-  } else {
-    jQuery.ajax(post_args);
-  }
+  var xml = window.ActiveXObject ? new ActiveXObject("Microsoft.XMLHTTP") : new XMLHttpRequest();
+  xml.open("POST", '/suites/1/finish', true);
+  xml.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+  var body = [];
+  body.push(encodeURIComponent("text") + "=" + encodeURIComponent( this.get_error_message_text() ));
+  body.push(encodeURIComponent("guid") + "=" + encodeURIComponent( 'foobar' ));
+  xml.send(body.join("&"));
 }
 JSSpec.Logger.prototype.onRunnerEnd = JSSpec.Logger.prototype.onRunnerEndWithServerNotification;
 
