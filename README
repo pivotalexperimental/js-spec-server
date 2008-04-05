@@ -17,4 +17,3 @@ To use JsSpec in a CI environment,
   * Run the js_spec_server on the machine that has the files.
     script/js_spec_server
   * Run the js_spec client.
-
