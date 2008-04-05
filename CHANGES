@@ -2,6 +2,7 @@
 - Using Thin as the server
 - Using Selenium to run the browsers
 - Added instructions to run JsSpec on CI
+- Added js_spec as an executable
 
 0.1.0
 - Added RailsServer
