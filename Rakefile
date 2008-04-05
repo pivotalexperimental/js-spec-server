@@ -26,7 +26,7 @@ def run_suite
 end
 
 PKG_NAME = "js_spec"
-PKG_VERSION = "0.1.0"
+PKG_VERSION = "0.2.0"
 PKG_FILES = FileList[
   '[A-Z]*',
   '*.rb',
@@ -53,11 +53,13 @@ spec = Gem::Specification.new do |s|
 
   s.test_files = Dir.glob('spec/*_spec.rb')
   s.require_path = 'lib'
-  s.autorequire = 'js_spec'
   s.author = "Brian Takita & Nathan Sobo"
   s.email = "brian@pivotallabs.com"
   s.homepage = "http://pivotallabs.com"
   s.rubyforge_project = "pivotalrb"
+  s.add_dependency('Selenium')
+  s.add_dependency('thin')
+  s.add_dependency('uuid')
 end
 
 Rake::GemPackageTask.new(spec) do |pkg|

@@ -7,3 +7,9 @@ http://jania.pe.kr/aw/moin.cgi/JSSpec
 == Using JsSpec
 js_spec_server /path/to/your/javascript/spec/files /path/to/your/javascript/implementation/files
 Open your browser to http://localhost:8080/specs
+
+== JsSpec on CI
+JS spec uses the Selenium gem to automatically control browsers on different machines.
+
+To use JsSpec in a CI environment,
+Run the selenium RC
