@@ -4,6 +4,16 @@ The JsSpec ruby library is a server runner for the JsSpec javascript library.
 http://code.google.com/p/jsspec/
 http://jania.pe.kr/aw/moin.cgi/JSSpec
 
+== Installing JsSpec
+You can use JsSpec as a gem or as a Rails plugin.
+To install the gem, run:
+  sudo gem install js_spec
+
+To install the plugin, run:
+  script/plugin install svn://rubyforge.org/var/svn/pivotalrb/js_spec/trunk
+
+The Rails plugin gives you generators when using JsSpec in a Rails environment.
+
 == Using JsSpec
 js_spec_server /path/to/your/javascript/spec/files /path/to/your/javascript/implementation/files
 Open your browser to http://localhost:8080/specs
@@ -16,4 +26,5 @@ To use JsSpec in a CI environment,
     selenium
   * Run the js_spec_server on the machine that has the files.
     script/js_spec_server
-  * Run the js_spec client.
+  * Run the js_spec client. The js_spec client has --selenium_host, --selenium_port, and --spec_url arguments to specify
+    where the Selenium server is relative to the js_spec server, and where the js_spec server is relative to the browser.
