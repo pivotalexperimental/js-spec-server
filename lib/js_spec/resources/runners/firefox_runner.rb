@@ -33,11 +33,17 @@ module JsSpec
 
         def post(request, response)
           FirefoxRunner.register_instance self
-          @driver = Selenium::SeleniumDriver.new('localhost', 4444, '*firefox', 'http://localhost:8080')
+          spec_url = (request && request['spec_url']) ? request['spec_url'] : spec_suite_url
+          parsed_spec_url = URI.parse(spec_url)
+          @driver = Selenium::SeleniumDriver.new(
+            request['selenium_host'] || 'localhost',
+            (request['selenium_port'] || 4444).to_i,
+            '*firefox',
+            "#{parsed_spec_url.scheme}://#{parsed_spec_url.host}:#{parsed_spec_url.port}"
+          )
           driver.start
           Thread.start do
-            url = (request && request['spec_url']) ? request['spec_url'] : spec_suite_url
-            url << "?guid=#{guid}"
+            url = "#{spec_url}?guid=#{guid}"
             driver.open(url)
           end
           response.status = nil

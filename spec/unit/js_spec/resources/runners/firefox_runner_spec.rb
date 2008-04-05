@@ -8,7 +8,7 @@ module JsSpec
       before do
         Thread.current[:connection] = connection
         @driver = "Selenium Driver"
-        stub(Selenium::SeleniumDriver).new('localhost', 4444, '*firefox', 'http://localhost:8080') do
+        stub(Selenium::SeleniumDriver).new('localhost', 4444, '*firefox', 'http://127.0.0.1:8080') do
           driver
         end
       end
@@ -31,15 +31,78 @@ module JsSpec
 
           response.should_not be_ready
         end
+        
+        describe "when a selenium_host parameter is passed into the request" do
+          before do
+            request['selenium_host'] = "another-machine"
+            stub(driver).start
+            stub(driver).open
+          end
+
+          it "starts the Selenium Driver with the passed in selenium_host" do
+            mock(Selenium::SeleniumDriver).new('another-machine', 4444, '*firefox', 'http://127.0.0.1:8080') do
+              driver
+            end
+            runner.post(request, response)
+          end
+        end
+
+        describe "when a selenium_host parameter is not passed into the request" do
+          before do
+            request['selenium_host'].should be_nil
+            stub(driver).start
+            stub(driver).open
+          end
+
+          it "starts the Selenium Driver from localhost" do
+            mock(Selenium::SeleniumDriver).new('localhost', 4444, '*firefox', 'http://127.0.0.1:8080') do
+              driver
+            end
+            runner.post(request, response)
+          end
+        end
+
+        describe "when a selenium_port parameter is passed into the request" do
+          before do
+            request['selenium_port'] = "4000"
+            stub(driver).start
+            stub(driver).open
+          end
+
+          it "starts the Selenium Driver with the passed in selenium_port" do
+            mock(Selenium::SeleniumDriver).new('localhost', 4000, '*firefox', 'http://127.0.0.1:8080') do
+              driver
+            end
+            runner.post(request, response)
+          end
+        end
+
+        describe "when a selenium_port parameter is not passed into the request" do
+          before do
+            request['selenium_port'].should be_nil
+            stub(driver).start
+            stub(driver).open
+          end
+
+          it "starts the Selenium Driver from localhost" do
+            mock(Selenium::SeleniumDriver).new('localhost', 4444, '*firefox', 'http://127.0.0.1:8080') do
+              driver
+            end
+            runner.post(request, response)
+          end
+        end
 
         describe "when a spec_url is passed into the request" do
           before do
-            request['spec_url'] = "http://127.0.0.1:8080/specs/subdir"
+            request['spec_url'] = "http://another-host:8080/specs/subdir"
           end
 
-          it "uses Selenium to run the specified spec suite in Firefox" do
+          it "runs Selenium with the passed in host and part to run the specified spec suite in Firefox" do
+            mock(Selenium::SeleniumDriver).new('localhost', 4444, '*firefox', 'http://another-host:8080') do
+              driver
+            end
             mock(driver).start
-            mock(driver).open("http://127.0.0.1:8080/specs/subdir?guid=#{runner.guid}")
+            mock(driver).open("http://another-host:8080/specs/subdir?guid=#{runner.guid}")
 
             runner.post(request, response)
           end
@@ -48,6 +111,9 @@ module JsSpec
         describe "when a spec_url is not passed into the request" do
           before do
             request['spec_url'].should be_nil
+            mock(Selenium::SeleniumDriver).new('localhost', 4444, '*firefox', 'http://127.0.0.1:8080') do
+              driver
+            end
           end
 
           it "uses Selenium to run the entire spec suite in Firefox" do
