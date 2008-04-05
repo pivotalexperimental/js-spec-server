@@ -1,3 +1,6 @@
+- Using Thin as the server
+- Using Selenium to run the browsers
+
 0.1.0
 - Added RailsServer
 - Better namespacing

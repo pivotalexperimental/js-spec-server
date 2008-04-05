@@ -12,4 +12,9 @@ Open your browser to http://localhost:8080/specs
 JS spec uses the Selenium gem to automatically control browsers on different machines.
 
 To use JsSpec in a CI environment,
-Run the selenium RC
+  * Install and run the selenium RC server on the machine that you want to run the browsers by using the command:
+    selenium
+  * Run the js_spec_server on the machine that has the files.
+    script/js_spec_server
+  * Run the js_spec client.
+
