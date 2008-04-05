@@ -7,6 +7,7 @@ require "uuid"
 require "cgi"
 require "net/http"
 require "selenium"
+require "optparse"
 
 dir = File.dirname(__FILE__)
 require "#{dir}/js_spec/thin/js_spec_connection"
