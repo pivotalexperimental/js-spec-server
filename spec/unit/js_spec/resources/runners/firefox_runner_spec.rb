@@ -32,9 +32,9 @@ module JsSpec
           response.should_not be_ready
         end
 
-        describe "when a url is passed into the request" do
+        describe "when a spec_url is passed into the request" do
           before do
-            request['url'] = "http://127.0.0.1:8080/specs/subdir"
+            request['spec_url'] = "http://127.0.0.1:8080/specs/subdir"
           end
 
           it "uses Selenium to run the specified spec suite in Firefox" do
@@ -45,9 +45,9 @@ module JsSpec
           end
         end
 
-        describe "when a url is not passed into the request" do
+        describe "when a spec_url is not passed into the request" do
           before do
-            request['url'].should be_nil
+            request['spec_url'].should be_nil
           end
 
           it "uses Selenium to run the entire spec suite in Firefox" do

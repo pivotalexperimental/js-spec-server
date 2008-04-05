@@ -36,7 +36,7 @@ module JsSpec
           @driver = Selenium::SeleniumDriver.new('localhost', 4444, '*firefox', 'http://localhost:8080')
           driver.start
           Thread.start do
-            url = (request && request['url']) ? request['url'] : spec_suite_url
+            url = (request && request['spec_url']) ? request['spec_url'] : spec_suite_url
             url << "?guid=#{guid}"
             driver.open(url)
           end

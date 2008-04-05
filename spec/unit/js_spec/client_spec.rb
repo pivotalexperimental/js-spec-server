@@ -6,7 +6,7 @@ module JsSpec
       describe 'when successful' do
         before do
           request = Object.new
-          mock(request).post("/runners/firefox", "")
+          mock(request).post("/runners/firefox", "selenium_host=localhost&selenium_port=4444")
           response = Object.new
           mock(response).body {""}
           mock(Net::HTTP).start(DEFAULT_HOST, DEFAULT_PORT).yields(request) {response}
@@ -26,7 +26,7 @@ module JsSpec
       describe 'when unsuccessful' do
         before do
           request = Object.new
-          mock(request).post("/runners/firefox", "")
+          mock(request).post("/runners/firefox", "selenium_host=localhost&selenium_port=4444")
           response = Object.new
           mock(response).body {"the failure message"}
           mock(Net::HTTP).start(DEFAULT_HOST, DEFAULT_PORT).yields(request) {response}
@@ -55,9 +55,12 @@ module JsSpec
         end
         
         it "passes the url as a post parameter" do
-          url = 'http://foobar.com/foo'
-          mock(request).post("/runners/firefox", "url=#{CGI.escape(url)}")
-          Client.run(url)
+          spec_url = 'http://foobar.com/foo'
+          mock(request).post(
+            "/runners/firefox",
+            "selenium_host=localhost&selenium_port=4444&spec_url=#{CGI.escape(spec_url)}"
+          )
+          Client.run(:spec_url => spec_url)
         end
       end
     end
