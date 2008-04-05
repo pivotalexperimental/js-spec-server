@@ -15,7 +15,7 @@ class JsSpecGenerator < Rails::Generator::Base
 
       m.directory 'spec'
       m.directory 'javascripts'
-      m.template  'spec_helper.js',                'spec/spec_helper.c;'
+      m.template  'spec_helper.js',                 'spec/javascripts/spec_helper.js;'
       m.file      'script/js_spec_server',          'script/js_spec_server', script_options
       m.file      'script/js_spec',                 'script/js_spec',        script_options
     end
