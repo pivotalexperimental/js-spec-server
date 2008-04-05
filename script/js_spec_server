@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+dir = File.dirname(__FILE__)
+root = File.expand_path("#{dir}/..")
+
+$LOAD_PATH.unshift("#{root}/vendor/js_spec/lib")
+require "js_spec"
+JsSpec::RailsServer.run(root)

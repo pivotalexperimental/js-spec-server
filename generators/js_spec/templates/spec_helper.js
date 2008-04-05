@@ -1,0 +1,2 @@
+Spec.reset = function() {
+}
