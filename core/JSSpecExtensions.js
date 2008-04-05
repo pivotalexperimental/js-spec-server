@@ -95,8 +95,15 @@ JSSpec.Logger.prototype.onRunnerEndWithServerNotification = function() {
   xml.open("POST", '/suites/1/finish', true);
   xml.setRequestHeader("X-Requested-With", "XMLHttpRequest");
   var body = [];
+  var href = window.location.href;
+  var params = href.split("?")[1].split("&");
+  for(var i=0; i < params.length; i++) {
+    var param = params[i];
+    if(param.match(/^guid=/)) {
+      body.push(encodeURIComponent("guid") + "=" + encodeURIComponent( param.split('=')[1] ));
+    }
+  }
   body.push(encodeURIComponent("text") + "=" + encodeURIComponent( this.get_error_message_text() ));
-  body.push(encodeURIComponent("guid") + "=" + encodeURIComponent( 'foobar' ));
   xml.send(body.join("&"));
 }
 JSSpec.Logger.prototype.onRunnerEnd = JSSpec.Logger.prototype.onRunnerEndWithServerNotification;

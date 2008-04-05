@@ -34,7 +34,7 @@ module JsSpec
           profile_base = "#{::Dir.tmpdir}/js_spec/firefox"
           mkdir_p profile_base
           @profile_dir = "#{profile_base}/#{Time.now.to_i}"
-          @guid = 'foobar'
+          @guid = UUID.new
           @request = request
           @response = response
           @connection = Server.connection
