@@ -11,6 +11,7 @@ To install the gem, run:
 
 To install the plugin, run:
   script/plugin install svn://rubyforge.org/var/svn/pivotalrb/js_spec/trunk
+  script/generate js_spec
 
 The Rails plugin gives you generators when using JsSpec in a Rails environment.
 
