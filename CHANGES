@@ -1,3 +1,5 @@
+- Fixed timeout issues by immediately sending the head of the response.
+
 0.2.0
 - Using Thin as the server
 - Using Selenium to run the browsers
