@@ -6,19 +6,17 @@ module Thin
 
       env = @request.env
       env['js_spec.connection'] = self
-      status, headers, body = @app.call(env)
-      unless status.to_i == 0
-        send_response(status, headers, body)
+      @response.status, @response.headers, @response.body = @app.call(env)
+      send_data @response.head
+      unless @response.body.empty?
+        send_body @response.body
       end
     rescue
       handle_error
     end
 
-    def send_response(status, headers, body)
-      @response.status, @response.headers, @response.body = status, headers, body
-      @response.persistent! if @request.persistent?
-      @response.each do |chunk|
-        trace { chunk }
+    def send_body(rack_response)
+      rack_response.each do |chunk|
         send_data chunk
       end
       # If no more request on that same connection, we close it.
@@ -36,6 +34,7 @@ module Thin
 
     def handle_error
       log "!! Unexpected error while processing request: #{$!.message}"
+      log $!.backtrace
       log_error
       close_connection rescue nil
     end

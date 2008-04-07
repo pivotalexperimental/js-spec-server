@@ -46,14 +46,13 @@ module JsSpec
             url = "#{spec_url}?guid=#{guid}"
             driver.open(url)
           end
-          response.status = nil
+          response.status = 200
         end
 
         def finalize(text)
           driver.stop
-          response.status = 200
           response.body = text
-          connection.send_response(*response.finish)
+          connection.send_body(response)
         end
 
         protected

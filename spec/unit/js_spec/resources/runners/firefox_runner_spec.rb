@@ -29,7 +29,7 @@ module JsSpec
           dont_allow(EventMachine).close_connection
           runner.post(request, response)
 
-          response.should_not be_ready
+          response.body.should be_empty
         end
         
         describe "when a selenium_host parameter is passed into the request" do

@@ -14,7 +14,7 @@ module Thin
         end
       end
 
-      describe "when the response code is not 0" do
+      describe "when the body is not empty" do
         attr_reader :somedir_resource
         before do
           mock(app = Object.new).call(is_a(Hash)) do
@@ -30,19 +30,18 @@ module Thin
         end
       end
 
-      describe "when the response code is 0" do
+      describe "when the body is empty" do
         attr_reader :somedir_resource
         before do
           mock(app = Object.new).call(is_a(Hash)) do
-            [0, {}, 'The Body']
+            [200, {}, []]
           end
           connection.app = app
         end
 
-        it "does not send data to the socket and keeps it open" do
+        it "keeps the connection open" do
           dont_allow(connection).close_connection_after_writing
           connection.receive_data "GET /specs HTTP/1.1\r\nHost: _\r\n\r\n"
-          result.should_not include("The Body")
         end
       end
     end
