@@ -11,8 +11,8 @@ module Thin
       unless @response.body.empty?
         send_body @response.body
       end
-    rescue
-      handle_error
+    rescue Exception => e
+      handle_error e
     end
 
     def send_body(rack_response)
@@ -21,8 +21,8 @@ module Thin
       end
       # If no more request on that same connection, we close it.
       close_connection_after_writing unless persistent?
-    rescue
-      handle_error
+    rescue Exception => e
+      handle_error e
     ensure
       @request.close  rescue nil
       @response.close rescue nil
@@ -32,9 +32,9 @@ module Thin
       post_init if persistent?
     end
 
-    def handle_error
-      log "!! Unexpected error while processing request: #{$!.message}"
-      log $!.backtrace
+    def handle_error(error)
+      log "!! Unexpected error while processing request: #{error.message}"
+      log error.backtrace
       log_error
       close_connection rescue nil
     end
