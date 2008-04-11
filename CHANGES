@@ -1,3 +1,4 @@
+- Fixed server crashing on exception issue.
 - Add div id=js_spec_content into the body of the runner html.
 - Fixed timeout issues by immediately sending the head of the response.
 
