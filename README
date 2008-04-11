@@ -16,9 +16,17 @@ To install the plugin, run:
 The Rails plugin gives you generators when using JsSpec in a Rails environment.
 
 == Using JsSpec
-js_spec_server /path/to/your/javascript/spec/files /path/to/your/javascript/implementation/files
+First you need to start your JsSpec server.
 
-Open your browser to http://localhost:8080/specs or run selenium and then run js_spec
+If you are using js_spec_server as a Rails plugin, you can simply run:
+  script/js_spec_server
+
+If you are using the js_spec gem, you can run:
+  js_spec_server /path/to/your/javascript/spec/files /path/to/your/javascript/implementation/files
+
+Once the server is started, there are two possibly ways to run your js spec:
+  * Open your browser to http://localhost:8080/specs
+  * Start the Selenium server by running `selenium` from the command line, then running `js_spec` from the command line
 
 == JsSpec on CI
 JS spec uses the Selenium gem to automatically control browsers on different machines.
