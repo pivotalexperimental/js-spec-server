@@ -33,7 +33,9 @@ Spec.register = function(spec_constructor) {
   }
 }
 
-Spec.reset = function() {}
+Spec.reset = function() {
+  document.getElementById('js_spec_content').innerHTML = "";
+}
 
 var Assets = {
   require: function(path_from_javascripts, onload) {

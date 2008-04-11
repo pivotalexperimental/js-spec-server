@@ -40,7 +40,7 @@ module JsSpec
           doc.at("link[@href='/core/JSSpec.css']").should exist
           doc.at("script[@src='/core/JSSpec.js']").should exist
           doc.at("script[@src='/core/JSSpecExtensions.js']").should exist
-          doc.at("body").inner_html.should be_empty
+          doc.at("body/#js_spec_content").should_not be_nil
         end
       end
     end

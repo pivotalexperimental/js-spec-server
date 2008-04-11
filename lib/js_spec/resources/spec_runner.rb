@@ -24,7 +24,9 @@ module JsSpec
           JSSpec.guid = '#{guid}';
         </script>
         </head>
-        <body></body>
+        <body>
+        <div id="js_spec_content"></div>
+        </body>
         </html>
         HTML
         response.body = html.gsub(/^        /, "")
