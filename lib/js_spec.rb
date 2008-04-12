@@ -1,15 +1,18 @@
 require "rubygems"
+gem "eventmachine", "0.10.0"
+gem "thin", "0.7.1"
+
 require "thin"
 require "fileutils"
 require "tmpdir"
 require "timeout"
-require "uuid"
 require "cgi"
 require "net/http"
 require "selenium"
 require "optparse"
 
 dir = File.dirname(__FILE__)
+require "#{dir}/js_spec/guid"
 require "#{dir}/js_spec/thin"
 require "#{dir}/js_spec/rack"
 require "#{dir}/js_spec/resources"

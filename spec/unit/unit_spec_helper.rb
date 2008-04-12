@@ -53,7 +53,7 @@ module Spec::Example::ExampleMethods
     stub(EventMachine).send_data do
       raise "Calls to EventMachine.send_data must be mocked or stubbed"
     end
-    @connection = Thin::JsSpecConnection.new(UUID.new)
+    @connection = Thin::JsSpecConnection.new(Guid.new)
     stub(EventMachine).send_data {raise "EventMachine.send_data must be handled"}
     stub(EventMachine).close_connection {raise "EventMachine.close_connection must be handled"}
     @server = JsSpec::Server.instance

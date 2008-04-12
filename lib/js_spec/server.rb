@@ -33,11 +33,10 @@ module JsSpec
     end
 
     def run(options)
-      ::Thin::Server.start(
-        ::Thin::Backends::JsSpecServer.new(options[:Host], options[:Port]),
-        options[:Port],
-        self
-      )
+      server = ::Thin::Server.new(options[:Host], options[:Port], self)
+      server.backend = ::Thin::Backends::JsSpecServer.new(options[:Host], options[:Port])
+      server.backend.server = server
+      server.start!
     end
 
     def call(env)
