@@ -14,7 +14,7 @@ class JsSpecGenerator < Rails::Generator::Base
       script_options     = { :chmod => 0755, :shebang => options[:shebang] == DEFAULT_SHEBANG ? nil : options[:shebang] }
 
       m.directory 'spec'
-      m.directory 'javascripts'
+      m.directory 'spec/javascripts'
       m.template  'spec_helper.js',                 'spec/javascripts/spec_helper.js'
       m.file      'script/js_spec_server',          'script/js_spec_server', script_options
       m.file      'script/js_spec',                 'script/js_spec',        script_options
