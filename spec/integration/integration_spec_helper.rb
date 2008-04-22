@@ -45,14 +45,14 @@ module Spec::Example::ExampleMethods
       Lsof.running?(8080)
     end
 
-    unless Lsof.running?(4444)
-      Thread.start do
-        system "selenium"
-      end
-      wait_for do
-        Lsof.running?(4444)
-      end
-    end
+#    unless Lsof.running?(4444)
+#      Thread.start do
+#        system "selenium"
+#      end
+#      wait_for do
+#        Lsof.running?(4444)
+#      end
+#    end
   end
 
   def root_url

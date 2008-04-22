@@ -35,13 +35,18 @@ module JsSpec
           FirefoxRunner.register_instance self
           spec_url = (request && request['spec_url']) ? request['spec_url'] : spec_suite_url
           parsed_spec_url = URI.parse(spec_url)
+          selenium_port = (request['selenium_port'] || 4444).to_i
           @driver = Selenium::SeleniumDriver.new(
             request['selenium_host'] || 'localhost',
-            (request['selenium_port'] || 4444).to_i,
+            selenium_port,
             '*firefox',
             "#{parsed_spec_url.scheme}://#{parsed_spec_url.host}:#{parsed_spec_url.port}"
           )
-          driver.start
+          begin
+            driver.start
+          rescue Errno::ECONNREFUSED => e
+            raise Errno::ECONNREFUSED, "Cannot connect to Selenium Server on port #{selenium_port}. To start the selenium server, run `selenium`."
+          end
           Thread.start do
             url = "#{spec_url}?guid=#{guid}"
             driver.open(url)
