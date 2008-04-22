@@ -8,7 +8,7 @@ module JsSpec
       before do
         Thread.current[:connection] = connection
         @driver = "Selenium Driver"
-        stub(Selenium::SeleniumDriver).new('localhost', 4444, '*firefox', 'http://127.0.0.1:8080') do
+        stub(Selenium::SeleniumDriver).new('localhost', 4444, '*firefox', 'http://0.0.0.0:8080') do
           driver
         end
       end
@@ -40,7 +40,7 @@ module JsSpec
           end
 
           it "starts the Selenium Driver with the passed in selenium_host" do
-            mock(Selenium::SeleniumDriver).new('another-machine', 4444, '*firefox', 'http://127.0.0.1:8080') do
+            mock(Selenium::SeleniumDriver).new('another-machine', 4444, '*firefox', 'http://0.0.0.0:8080') do
               driver
             end
             runner.post(request, response)
@@ -55,7 +55,7 @@ module JsSpec
           end
 
           it "starts the Selenium Driver from localhost" do
-            mock(Selenium::SeleniumDriver).new('localhost', 4444, '*firefox', 'http://127.0.0.1:8080') do
+            mock(Selenium::SeleniumDriver).new('localhost', 4444, '*firefox', 'http://0.0.0.0:8080') do
               driver
             end
             runner.post(request, response)
@@ -70,7 +70,7 @@ module JsSpec
           end
 
           it "starts the Selenium Driver with the passed in selenium_port" do
-            mock(Selenium::SeleniumDriver).new('localhost', 4000, '*firefox', 'http://127.0.0.1:8080') do
+            mock(Selenium::SeleniumDriver).new('localhost', 4000, '*firefox', 'http://0.0.0.0:8080') do
               driver
             end
             runner.post(request, response)
@@ -85,7 +85,7 @@ module JsSpec
           end
 
           it "starts the Selenium Driver from localhost" do
-            mock(Selenium::SeleniumDriver).new('localhost', 4444, '*firefox', 'http://127.0.0.1:8080') do
+            mock(Selenium::SeleniumDriver).new('localhost', 4444, '*firefox', 'http://0.0.0.0:8080') do
               driver
             end
             runner.post(request, response)
@@ -111,14 +111,14 @@ module JsSpec
         describe "when a spec_url is not passed into the request" do
           before do
             request['spec_url'].should be_nil
-            mock(Selenium::SeleniumDriver).new('localhost', 4444, '*firefox', 'http://127.0.0.1:8080') do
+            mock(Selenium::SeleniumDriver).new('localhost', 4444, '*firefox', 'http://0.0.0.0:8080') do
               driver
             end
           end
 
           it "uses Selenium to run the entire spec suite in Firefox" do
             mock(driver).start
-            mock(driver).open("http://127.0.0.1:8080/specs?guid=#{runner.guid}")
+            mock(driver).open("http://0.0.0.0:8080/specs?guid=#{runner.guid}")
 
             runner.post(request, response)
           end
