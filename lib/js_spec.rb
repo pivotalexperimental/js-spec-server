@@ -22,6 +22,6 @@ require "#{dir}/js_spec/server"
 require "#{dir}/js_spec/rails_server"
 
 module JsSpec
-  DEFAULT_HOST = "127.0.0.1"
+  DEFAULT_HOST = "0.0.0.0"
   DEFAULT_PORT = 8080  
 end
