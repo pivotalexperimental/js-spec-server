@@ -1,6 +1,6 @@
 require "rubygems"
 gem "eventmachine", "0.10.0"
-gem "thin", "0.8.0"
+gem "thin", "0.8.1"
 
 require "thin"
 require "fileutils"
