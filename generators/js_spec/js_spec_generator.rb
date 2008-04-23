@@ -1,6 +1,6 @@
 require 'rbconfig'
 
-# This generator bootstraps a Rails project for use with RSpec
+# This generator bootstraps a Rails project for use with JsSpec
 class JsSpecGenerator < Rails::Generator::Base
   DEFAULT_SHEBANG = File.join(Config::CONFIG['bindir'],
                               Config::CONFIG['ruby_install_name'])
