@@ -9,7 +9,7 @@ module JsSpec
       end
 
       describe "#locate" do
-        it "when passed 'specs', returns a SpecDirRunner representing the specs" do
+        it "when passed 'specs', returns a SpecDir representing the specs" do
           runner = web_root.locate('specs')
           runner.should == spec_dir
         end

@@ -5,12 +5,12 @@ module JsSpec
         if file = file(name)
           file
         else
-          locate_spec_runner(name)
+          locate_spec(name)
         end
       end
 
       def get(request, response)
-        SpecDirRunner.new(self).get(request, response)
+        SpecDir.new(self).get(request, response)
       end
 
       def glob(pattern)
@@ -28,11 +28,11 @@ module JsSpec
         [absolute_child_path, relative_child_path]
       end
 
-      def locate_spec_runner(name)
+      def locate_spec(name)
         if subdir = subdir(name)
           subdir
         elsif file = file(name + '.js')
-          SpecFileRunner.new(file)
+          SpecFile.new(file)
         else
           raise "No specs found at #{relative_path}/#{name}."
         end

@@ -1,6 +1,6 @@
 module JsSpec
   module Resources
-    class SpecRunner
+    class Spec
       def get(request, response)
         guid = (request && request['guid']) || 'null';
         html = <<-HTML

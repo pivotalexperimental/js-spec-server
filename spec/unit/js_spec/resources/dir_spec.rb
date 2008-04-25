@@ -49,9 +49,9 @@ module JsSpec
       end
 
       describe "#locate when passed a name without an extension" do
-        it "when the name corresponds to a .js file in the directory, returns a SpecFileRunner for the file" do
+        it "when the name corresponds to a .js file in the directory, returns a SpecFile for the file" do
           file_runner = dir.locate("failing_spec")
-          file_runner.should be_an_instance_of(SpecFileRunner)
+          file_runner.should be_an_instance_of(SpecFile)
           file_runner.file.should == spec_file("/failing_spec.js")
         end
 
