@@ -28,7 +28,6 @@ Spec.register = function(spec_constructor) {
         Spec.reset();
       }
     }
-    new spec_constructor();
     describe(spec_constructor.name.toString() + context.toString(), definition);
   }
 }
