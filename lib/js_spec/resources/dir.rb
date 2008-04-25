@@ -4,13 +4,15 @@ module JsSpec
       def locate(name)
         if file = file(name)
           file
+        elsif subdir = subdir(name)
+          subdir
         else
-          locate_spec(name)
+          raise "No file or directory found at #{relative_path}/#{name}."
         end
       end
 
       def get(request, response)
-        SpecDir.new(self).get(request, response)
+
       end
 
       def glob(pattern)
@@ -26,16 +28,6 @@ module JsSpec
         absolute_child_path = "#{absolute_path}/#{name}"
         relative_child_path = "#{relative_path}/#{name}"
         [absolute_child_path, relative_child_path]
-      end
-
-      def locate_spec(name)
-        if subdir = subdir(name)
-          subdir
-        elsif file = file(name + '.js')
-          SpecFile.new(file)
-        else
-          raise "No specs found at #{relative_path}/#{name}."
-        end
       end
 
       def file(name)

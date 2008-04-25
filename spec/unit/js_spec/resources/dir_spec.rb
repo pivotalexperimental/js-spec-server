@@ -49,19 +49,13 @@ module JsSpec
       end
 
       describe "#locate when passed a name without an extension" do
-        it "when the name corresponds to a .js file in the directory, returns a SpecFile for the file" do
-          file_runner = dir.locate("failing_spec")
-          file_runner.should be_an_instance_of(SpecFile)
-          file_runner.file.should == spec_file("/failing_spec.js")
-        end
-
         it "when name corresponds to a subdirectory, returns a DirectoryRunner for the directory" do
           subdir = dir.locate("foo")
           subdir.should be_an_instance_of(Resources::Dir)
-          subdir.should == spec_dir("/foo")
+          subdir.should == JsSpec::Resources::Dir.new("#{spec_root_path}/foo", "/specs/foo")
         end
 
-        it "when name does not correspond to a .js file or directory, raises an error" do
+        it "when name does not correspond to a directory, raises an error" do
           lambda do
             dir.locate("nonexistent")
           end.should raise_error

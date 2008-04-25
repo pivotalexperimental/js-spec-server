@@ -1,14 +1,10 @@
 module JsSpec
   module Resources
-    class SpecFile < Spec
-      attr_reader :file
-
-      def initialize(file)
-        @file = file
-      end
-
+    class SpecFile < File
+      include Spec
+      
       def spec_files
-        [file]
+        [self]
       end
     end
   end
