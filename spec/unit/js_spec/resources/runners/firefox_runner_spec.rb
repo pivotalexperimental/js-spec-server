@@ -13,6 +13,49 @@ module JsSpec
         end
       end
 
+      describe ".resume" do
+        describe "when there is a runner in .instances matching the passed in guid" do
+          attr_reader :firefox_profile_path
+          before do
+            @request = Rack::Request.new( Rack::MockRequest.env_for('/runners/firefox') )
+            @response = Rack::Response.new
+            @runner = Runners::FirefoxRunner.new(request, response)
+            stub(Thread).start.yields
+            stub(driver).start
+            stub(driver).open
+            stub(driver).stop
+            stub(EventMachine).send_data
+            stub(EventMachine).close_connection
+            runner.post(request, response)
+            Runners::FirefoxRunner.instances[runner.guid].should == runner
+          end
+
+          it "removes the runner from .instances" do
+            Runners::FirefoxRunner.resume(runner.guid, "Error Text")
+            Runners::FirefoxRunner.instances[runner.guid].should be_nil
+          end
+
+          it "finalizes the runner" do
+            text = "Error Text"
+            mock.proxy(runner).finalize(text)
+            Runners::FirefoxRunner.resume(runner.guid, text)
+          end
+        end
+
+        describe "when there is no runner in .instances matching the passed in guid" do
+          attr_reader :non_existant_guid
+          before do
+            @non_existant_guid = "idontexist"
+          end
+
+          it "does not raise an error" do
+            lambda do
+              Runners::FirefoxRunner.resume(non_existant_guid, "Error Text")
+            end.should_not raise_error
+          end
+        end
+      end
+
       describe "#post" do
         attr_reader :firefox_profile_path
         before do

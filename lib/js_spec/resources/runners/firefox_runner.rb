@@ -5,14 +5,13 @@ module JsSpec
         class << self
           def resume(guid, text)
             runner = instances.delete(guid)
-            runner.finalize(text)
+            runner.finalize(text) if runner
           end
 
           def register_instance(runner)
             instances[runner.guid] = runner
           end
 
-          protected
           def instances
             @instances ||= {}
           end
