@@ -1,3 +1,6 @@
+- ExampleGroups no longer need to be constructors
+- Fixed finalize for nil error when running specs from the browser
+
 0.2.1
 - Using thin 0.8.1
 - Fixed server crashing on exception issue.
