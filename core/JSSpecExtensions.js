@@ -1,17 +1,17 @@
 function Spec() {
 }
 
-Spec.register = function(spec_constructor) {
-  spec_constructor.describe = function(context, definition) {
+Spec.register = function(example_group) {
+  example_group.describe = function(context, definition) {
     var custom_before = definition['before each'];
     if(custom_before) {
       definition['before each'] = function() {
-        if(spec_constructor['before each']) spec_constructor['before each']();
+        if(example_group['before each']) example_group['before each']();
         custom_before();
       }
     } else {
       definition['before each'] = function() {
-        if(spec_constructor['before each']) spec_constructor['before each']();
+        if(example_group['before each']) example_group['before each']();
       };
     }
 
@@ -19,16 +19,16 @@ Spec.register = function(spec_constructor) {
     if(custom_after) {
       definition['after each'] = function() {
         custom_after();
-        if(spec_constructor['after each']) spec_constructor['after each']();
+        if(example_group['after each']) example_group['after each']();
         Spec.reset();
       }
     } else {
       definition['after each'] = function() {
-        if(spec_constructor['after each']) spec_constructor['after each']();
+        if(example_group['after each']) example_group['after each']();
         Spec.reset();
       }
     }
-    describe(spec_constructor.name.toString() + context.toString(), definition);
+    describe(example_group.name.toString() + context.toString(), definition);
   }
 }
 
