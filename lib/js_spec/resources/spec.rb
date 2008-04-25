@@ -12,7 +12,6 @@ module JsSpec
         <link rel="stylesheet" type="text/css" href="/core/JSSpec.css" />
         <script type="text/javascript" src="/core/diff_match_patch.js"></script>
         <script type="text/javascript" src="/core/JSSpec.js"></script>
-        <script type="text/javascript" src="/core/jquery.js"></script>
         <script type="text/javascript" src="/core/JSSpecExtensions.js"></script>
         HTML
         spec_files.each do |file|
