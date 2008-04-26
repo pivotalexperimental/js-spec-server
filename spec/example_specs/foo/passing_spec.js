@@ -1,5 +1,10 @@
 require("/implementations/foo");
-describe("A passing spec", {
+
+var FooPassingSpec = new Object();
+FooPassingSpec.name = "Foo Passing Spec";
+Spec.register(FooPassingSpec);
+
+FooPassingSpec.describe("A passing spec", {
 	'passes': function() {
 		value_of(Foo.value).should_be(true);
 	}
