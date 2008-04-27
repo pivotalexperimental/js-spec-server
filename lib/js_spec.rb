@@ -9,8 +9,8 @@ JsTestCore::Resources::WebRoot.dispatch_specs
 require "#{dir}/js_spec/resources"
 
 module JsSpec
-  DEFAULT_HOST = "0.0.0.0"
-  DEFAULT_PORT = 8080
+  DEFAULT_HOST = JsTestCore::DEFAULT_HOST
+  DEFAULT_PORT = JsTestCore::DEFAULT_PORT
 
   Server = JsTestCore::Server
   RailsServer = JsTestCore::RailsServer
