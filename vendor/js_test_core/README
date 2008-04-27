@@ -1,0 +1,4 @@
+= JsTestCore
+The JsTestCore library is the core javascript test server library used by several JS Test server libraries.
+
+To hook up your own JS Test framework, use
