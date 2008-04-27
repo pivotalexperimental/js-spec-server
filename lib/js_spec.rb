@@ -1,5 +1,4 @@
 require "rubygems"
-gem "thin", "0.8.1"
 
 dir = File.dirname(__FILE__)
 $:.unshift(File.expand_path("#{dir}/../vendor/js_test_core/lib"))
