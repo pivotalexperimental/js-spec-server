@@ -82,7 +82,7 @@ module Spec::Example::ExampleMethods
   end
 
   def env_for(method, url, params)
-    Rack::MockRequest.env_for(url, params.merge({:method => method.to_s.upcase, 'js_spec.connection' => connection}))
+    Rack::MockRequest.env_for(url, params.merge({:method => method.to_s.upcase, 'js_test_core.connection' => connection}))
   end
 
   def create_request(method, url, params={})
