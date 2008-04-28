@@ -5,6 +5,7 @@ dir = File.dirname(__FILE__)
 $LOAD_PATH.unshift "#{dir}/../../lib"
 require "js_spec"
 require "hpricot"
+require "guid"
 
 Spec::Runner.configure do |config|
   config.mock_with :rr

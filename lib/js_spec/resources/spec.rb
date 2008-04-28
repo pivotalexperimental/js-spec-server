@@ -20,7 +20,9 @@ module JsSpec
 
         html << <<-HTML
         <script type="text/javascript">
-          JSSpec.guid = '#{guid}';
+          if(top.runOptions) {
+            JSSpec.guid = top.runOptions.getSessionId();
+          }
         </script>
         </head>
         <body>
