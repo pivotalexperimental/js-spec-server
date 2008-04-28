@@ -1,7 +1,7 @@
 require File.expand_path("#{File.dirname(__FILE__)}/integration_spec_helper")
 
 describe "JsSpec" do
-  it "writes the guid" do
+  it "uses the Selenium session id" do
     driver = Selenium::SeleniumDriver.new("localhost", 4444,
           "*firefox", root_url, 15000)
 
@@ -13,7 +13,7 @@ describe "JsSpec" do
       driver.start
       driver.open("#{root_url}/specs/foo/passing_spec")
 
-      driver.get_eval("selenium.browserbot.getCurrentWindow().JSSpec.guid").should == driver.session_id
+      driver.get_eval("selenium.browserbot.getCurrentWindow().JSSpec.session_id()").should == driver.session_id
     ensure
       driver.stop
     end

@@ -96,12 +96,20 @@ JSSpec.Logger.prototype.onRunnerEndWithServerNotification = function() {
   xml.open("POST", '/suites/1/finish', true);
   xml.setRequestHeader("X-Requested-With", "XMLHttpRequest");
   var body = [];
-  body.push(encodeURIComponent("guid") + "=" + encodeURIComponent( JSSpec.guid ));
+  var session_id = JSSpec.session_id();
+  if(session_id) {
+    body.push(encodeURIComponent("session_id") + "=" + encodeURIComponent( session_id ));
+  }
   body.push(encodeURIComponent("text") + "=" + encodeURIComponent( this.get_error_message_text() ));
   xml.send(body.join("&"));
 }
 JSSpec.Logger.prototype.onRunnerEnd = JSSpec.Logger.prototype.onRunnerEndWithServerNotification;
-JSSpec.guid = null;
+
+JSSpec.session_id = function() {
+  if(top.runOptions) {
+    return top.runOptions.getSessionId();
+  }
+}
 
 JSSpec.Logger.prototype.get_error_message_text = function() {
   var error_messages = [];

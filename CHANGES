@@ -1,3 +1,6 @@
+- Added JSSpec.session_id method
+- Removed JSSpec.guid property
+- Sending session_id post parameter instead of guid
 - Using Selenium session_id instead of a generated guid to identify the session.
 - ExampleGroups no longer need to be constructors
 - Fixed finalize for nil error when running specs from the browser
