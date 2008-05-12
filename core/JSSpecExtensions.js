@@ -92,23 +92,18 @@ function parse_url(url) {
 JSSpec.Logger.prototype.onRunnerEndWithoutServerNotification = JSSpec.Logger.prototype.onRunnerEnd;
 JSSpec.Logger.prototype.onRunnerEndWithServerNotification = function() {
   this.onRunnerEndWithoutServerNotification();
-  var xml = window.ActiveXObject ? new ActiveXObject("Microsoft.XMLHTTP") : new XMLHttpRequest();
-  xml.open("POST", '/suites/1/finish', true);
-  xml.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-  var body = [];
-  var session_id = JSSpec.session_id();
-  if(session_id) {
-    body.push(encodeURIComponent("session_id") + "=" + encodeURIComponent( session_id ));
+  var suite_id = JSSpec.suite_id();
+  if(suite_id) {
+    var xml = window.ActiveXObject ? new ActiveXObject("Microsoft.XMLHTTP") : new XMLHttpRequest();
+    xml.open("POST", '/suites/' + suite_id + '/finish', true);
+    xml.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+    xml.send("text=" + encodeURIComponent(this.get_error_message_text()));
   }
-  body.push(encodeURIComponent("text") + "=" + encodeURIComponent( this.get_error_message_text() ));
-  xml.send(body.join("&"));
 }
 JSSpec.Logger.prototype.onRunnerEnd = JSSpec.Logger.prototype.onRunnerEndWithServerNotification;
 
-JSSpec.session_id = function() {
-  if(top.runOptions) {
-    return top.runOptions.getSessionId();
-  }
+JSSpec.suite_id = function() {
+  return top.runOptions ? top.runOptions.getSessionId() : 'user';
 }
 
 JSSpec.Logger.prototype.get_error_message_text = function() {

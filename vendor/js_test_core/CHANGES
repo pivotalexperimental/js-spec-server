@@ -1,3 +1,6 @@
+0.1.1
+- SuiteFinish#post immediately closes the connection
+
 0.1.0
 - Initial Release extracted from JsTestCore.
 - Added JsTestCore::WebRoot.dispatch_specs and .dispatch_strategy

@@ -14,6 +14,42 @@ module JsTestCore
         end
       end
 
+      describe ".resume" do
+        describe "when there is a runner for the passed in suite_id" do
+          before do
+            @request = Rack::Request.new( Rack::MockRequest.env_for('/runners/firefox') )
+            @response = Rack::Response.new
+            @runner = Runners::FirefoxRunner.new
+            stub(Thread).start.yields
+            
+            stub(driver).start
+            stub(driver).open
+            stub(driver).session_id {suite_id}
+            stub(driver).stop
+            stub(EventMachine).send_data
+            stub(EventMachine).close_connection
+
+            runner.post(request, response)
+            runner.suite_id.should == suite_id
+          end
+
+          it "removes and finalizes the instance that has the suite_id" do
+            mock.proxy(runner).finalize("Browser output")
+            Runners::FirefoxRunner.send(:instances)[suite_id].should == runner
+            Runners::FirefoxRunner.resume(suite_id, "Browser output")
+            Runners::FirefoxRunner.send(:instances)[suite_id].should be_nil
+          end
+        end
+
+        describe "when there is not a runner for the passed in suite_id" do
+          it "does nothing" do
+            lambda do
+              Runners::FirefoxRunner.resume("invalid", "nothing happens")
+            end.should_not raise_error
+          end
+        end
+      end
+
       describe "#post" do
         attr_reader :firefox_profile_path
         before do

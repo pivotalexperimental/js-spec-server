@@ -1,0 +1,7 @@
+--- 
+format: 1
+handler: 
+  commit: ab32d08b486235268e7021e2e6ea813ee220b230
+repository_url: git://github.com/btakita/js_test_core.git
+lock: false
+repository_class: Piston::Git::Repository

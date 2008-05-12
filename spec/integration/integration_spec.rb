@@ -13,7 +13,7 @@ describe "JsSpec" do
       driver.start
       driver.open("#{root_url}/specs/foo/passing_spec")
 
-      driver.get_eval("selenium.browserbot.getCurrentWindow().JSSpec.session_id()").should == driver.session_id
+      driver.get_eval("selenium.browserbot.getCurrentWindow().JSSpec.suite_id()").should == driver.session_id
     ensure
       driver.stop
     end

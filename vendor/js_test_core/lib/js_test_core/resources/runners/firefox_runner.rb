@@ -3,13 +3,15 @@ module JsTestCore
     class Runners
       class FirefoxRunner
         class << self
-          def resume(session_id, text)
-            runner = instances.delete(session_id)
-            runner.finalize(text)
+          def resume(suite_id, text)
+            if instances[suite_id]
+              runner = instances.delete(suite_id)
+              runner.finalize(text)
+            end
           end
 
           def register_instance(runner)
-            instances[runner.session_id] = runner
+            instances[runner.suite_id] = runner
           end
 
           protected
@@ -19,7 +21,7 @@ module JsTestCore
         end
 
         include FileUtils
-        attr_reader :session_id, :profile_dir, :connection, :driver, :response
+        attr_reader :profile_dir, :connection, :driver, :response
 
         def initialize
           profile_base = "#{::Dir.tmpdir}/js_test_core/firefox"
@@ -58,7 +60,7 @@ module JsTestCore
           connection.send_body(response)
         end
 
-        def session_id
+        def suite_id
           driver.session_id
         end
 
