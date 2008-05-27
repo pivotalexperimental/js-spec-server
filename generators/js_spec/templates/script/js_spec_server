@@ -2,6 +2,6 @@
 dir = File.dirname(__FILE__)
 root = File.expand_path("#{dir}/..")
 
-$LOAD_PATH.unshift("#{root}/vendor/plugins/js_spec/lib")
+require "#{root}/config/boot"
 require "js_spec"
 JsSpec::RailsServer.run(root)
