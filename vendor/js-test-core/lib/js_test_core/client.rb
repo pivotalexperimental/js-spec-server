@@ -1,24 +1,17 @@
 module JsTestCore
   class Client
-    class << self
-      def run(params={})
-        data = []
-        data << "selenium_host=#{CGI.escape(params[:selenium_host] || 'localhost')}"
-        data << "selenium_port=#{CGI.escape((params[:selenium_port] || 4444).to_s)}"
-        data << "spec_url=#{CGI.escape(params[:spec_url])}" if params[:spec_url]
-        response = Net::HTTP.start(DEFAULT_HOST, DEFAULT_PORT) do |http|
-          http.post('/runners/firefox', data.join("&"))
-        end
+    class ClientException < Exception
+    end
 
-        body = response.body
-        if body.empty?
-          puts "SUCCESS"
-          return true
-        else
-          puts "FAILURE"
-          puts body
-          return false
-        end
+    class InvalidStatusResponse < ClientException
+    end
+
+    class SuiteNotFound < ClientException
+    end
+
+    class << self
+      def run(parameters={})
+        new(parameters).run
       end
 
       def run_argv(argv)
@@ -45,6 +38,73 @@ module JsTestCore
         parser.order!(argv)
         run params
       end
+    end
+
+    attr_reader :parameters, :query_string, :http, :suite_start_response, :last_poll_status, :last_poll_reason, :last_poll
+    def initialize(parameters)
+      @parameters = parameters
+      @query_string = SeleniumServerConfiguration.query_string_from(parameters)
+    end
+
+    def run
+      Net::HTTP.start(DEFAULT_HOST, DEFAULT_PORT) do |@http|
+        start_firefox_runner
+        wait_for_suite_to_finish
+      end
+      report_result
+    end
+
+    def parts_from_query(query)
+      query.split('&').inject({}) do |acc, key_value_pair|
+        key, value = key_value_pair.split('=')
+        acc[key] = value
+        acc
+      end
+    end
+    
+    protected
+    def start_firefox_runner
+      @suite_start_response = http.post('/runners/firefox', query_string)
+    end
+
+    def wait_for_suite_to_finish
+      poll while suite_not_completed?
+    end
+
+    def report_result
+      case last_poll_status
+      when Resources::Suite::SUCCESSFUL_COMPLETION
+        STDOUT.puts "SUCCESS"
+        true
+      when Resources::Suite::FAILURE_COMPLETION
+        STDOUT.puts "FAILURE"
+        STDOUT.puts last_poll_reason
+        false
+      else
+        raise InvalidStatusResponse, "Invalid Status: #{last_poll_status}"
+      end
+    end
+
+    def suite_not_completed?
+      last_poll_status.nil? || last_poll_status == Resources::Suite::RUNNING
+    end
+
+    def poll
+      @last_poll = http.get("/suites/#{suite_id}")
+      ensure_suite_exists!
+      parts = parts_from_query(last_poll.body)
+      @last_poll_status = parts['status']
+      @last_poll_reason = parts['reason']
+    end
+
+    def ensure_suite_exists!
+      if (400..499).include?(Integer(last_poll.code))
+        raise SuiteNotFound, "Could not find suite with id #{suite_id}"
+      end
+    end
+
+    def suite_id
+      @suite_id ||= parts_from_query(suite_start_response.body)['suite_id']
     end
   end
 end

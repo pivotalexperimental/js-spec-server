@@ -1,7 +1,8 @@
 --- 
 format: 1
 handler: 
-  commit: c67486861aafc99dc75b83e7538b17ba44755311
-repository_url: git://github.com/btakita/js-test-core.git
+  commit: b161d7fcd06a93938c748b66ad524f3a29c60b3c
+  branch: HEAD
 lock: false
+repository_url: git://github.com/pivotal/js-test-core.git
 repository_class: Piston::Git::Repository
