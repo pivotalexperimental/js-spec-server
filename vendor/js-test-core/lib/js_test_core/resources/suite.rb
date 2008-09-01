@@ -14,11 +14,7 @@ module JsTestCore
       property :id
 
       def get
-<<<<<<< HEAD:vendor/js-test-core/lib/js_test_core/resources/suite.rb
         runner = Runners::Runner.find(id)
-=======
-        runner = Runners::FirefoxRunner.find(id)
->>>>>>> bdda07f2c71511f181aab95e0472c4e19ffd06e7:vendor/js-test-core/lib/js_test_core/resources/suite.rb
         if runner
           connection.send_head
           if runner.running?
