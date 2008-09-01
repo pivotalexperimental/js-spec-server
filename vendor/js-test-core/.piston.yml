@@ -1,7 +1,11 @@
 --- 
 format: 1
 handler: 
+<<<<<<< HEAD:vendor/js-test-core/.piston.yml
   commit: 15cea326c10896bdce3bc640d59099640f129a7a
+=======
+  commit: b161d7fcd06a93938c748b66ad524f3a29c60b3c
+>>>>>>> bdda07f2c71511f181aab95e0472c4e19ffd06e7:vendor/js-test-core/.piston.yml
   branch: HEAD
 lock: false
 repository_url: git://github.com/pivotal/js-test-core.git
