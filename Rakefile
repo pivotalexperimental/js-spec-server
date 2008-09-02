@@ -26,7 +26,7 @@ def run_suite
 end
 
 PKG_NAME = "js_spec"
-PKG_VERSION = "0.2.1"
+PKG_VERSION = "0.3.0"
 PKG_FILES = FileList[
   '[A-Z]*',
   '*.rb',
