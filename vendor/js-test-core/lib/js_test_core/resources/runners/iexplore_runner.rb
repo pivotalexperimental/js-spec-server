@@ -1,10 +1,10 @@
 module JsTestCore
   module Resources
     class Runners
-      class FirefoxRunner < Runner
+      class IExploreRunner < Runner
         protected
         def selenium_browser_start_command
-          "*firefox"
+          "*iexplore"
         end
       end
     end
