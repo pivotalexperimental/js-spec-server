@@ -55,12 +55,20 @@ module JsTestCore
             firefox_connection.receive_data("POST /runners/firefox HTTP/1.1\r\nHost: _\r\n\r\n")
           end
 
+<<<<<<< HEAD:vendor/js-test-core/spec/unit/js_test_core/resources/suite_finish_spec.rb
           it "calls Runner.finalize" do
+=======
+          it "resumes the FirefoxRunner" do
+>>>>>>> bdda07f2c71511f181aab95e0472c4e19ffd06e7:vendor/js-test-core/spec/unit/js_test_core/resources/suite_finish_spec.rb
             text = "The text in the POST body"
             body = "text=#{text}"
             stub(connection).send_head
             stub(connection).send_body
+<<<<<<< HEAD:vendor/js-test-core/spec/unit/js_test_core/resources/suite_finish_spec.rb
             mock.proxy(Runners::Runner).finalize(suite_id.to_s, text)
+=======
+            mock.proxy(Runners::FirefoxRunner).finalize(suite_id.to_s, text)
+>>>>>>> bdda07f2c71511f181aab95e0472c4e19ffd06e7:vendor/js-test-core/spec/unit/js_test_core/resources/suite_finish_spec.rb
             mock(driver).stop
             stub(connection).close_connection
 
@@ -68,6 +76,10 @@ module JsTestCore
           end
 
           it "responds with a blank body" do
+<<<<<<< HEAD:vendor/js-test-core/spec/unit/js_test_core/resources/suite_finish_spec.rb
+=======
+            stub(Runners::FirefoxRunner).resume
+>>>>>>> bdda07f2c71511f181aab95e0472c4e19ffd06e7:vendor/js-test-core/spec/unit/js_test_core/resources/suite_finish_spec.rb
             stub(driver).stop
             stub(connection).close_connection
 
