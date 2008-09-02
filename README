@@ -36,5 +36,6 @@ To use JsSpec in a CI environment,
     selenium
   * Run the js_spec_server on the machine that has the files.
     script/js_spec_server
-  * Run the js_spec client. The js_spec client has --selenium_host, --selenium_port, and --spec_url arguments to specify
+  * Run the js_spec client. The js_spec client has --selenium_browser_start_command, --selenium_host, --selenium_port, and --spec_url arguments to specify
     where the Selenium server is relative to the js_spec server, and where the js_spec server is relative to the browser.
+  * Running `script/js_spec_server` is equivalent to running `script/js_spec_server --selenium_browser_start_command *firefox --selenium_host localhost --selenium_port 4444 --spec_url http://localhost:8080/specs`
