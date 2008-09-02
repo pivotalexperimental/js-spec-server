@@ -13,69 +13,6 @@ module JsTestCore
         end
       end
 
-<<<<<<< HEAD:vendor/js-test-core/spec/unit/js_test_core/resources/runners/firefox_runner_spec.rb
-=======
-      describe ".find" do
-        attr_reader :runner
-        before do
-          @runner = Runners::FirefoxRunner.new
-          stub(runner).driver {driver}
-          stub(driver).session_id {suite_id}
-          Runners::FirefoxRunner.register(runner)
-        end
-        
-        context "when passed an id for which there is a corresponding Runner" do
-          it "returns the Runner" do
-            Runners::FirefoxRunner.find(suite_id).should == runner
-          end
-        end
-
-        context "when passed an id for which there is no corresponding Runner" do
-          it "returns nil" do
-            invalid_id = "666666666666666"
-            Runners::FirefoxRunner.find(invalid_id).should be_nil
-          end
-        end
-      end
-
-      describe ".finalize" do
-        attr_reader :runner
-        describe "when there is a runner for the passed in suite_id" do
-          before do
-            @request = Rack::Request.new( Rack::MockRequest.env_for('/runners/firefox') )
-            @response = Rack::Response.new
-            @runner = Runners::FirefoxRunner.new(:connection => connection)
-            stub(Thread).start.yields
-
-            stub(driver).start
-            stub(driver).open
-            stub(driver).session_id {suite_id}
-            stub(driver).stop
-            stub_send_data
-            stub(EventMachine).close_connection
-
-            runner.post
-            runner.suite_id.should == suite_id
-          end
-
-          it "finalizes the Runner that has the suite_id and keeps the Runner in memory" do
-            mock.proxy(runner).finalize("Browser output")
-            Runners::FirefoxRunner.find(suite_id).should == runner
-            Runners::FirefoxRunner.finalize(suite_id, "Browser output")
-            Runners::FirefoxRunner.find(suite_id).should == runner
-          end
-        end
-
-        describe "when there is not a runner for the passed in suite_id" do
-          it "does nothing" do
-            lambda do
-              Runners::FirefoxRunner.finalize("6666666", "nothing happens")
-            end.should_not raise_error
-          end
-        end
-      end
-
->>>>>>> bdda07f2c71511f181aab95e0472c4e19ffd06e7:vendor/js-test-core/spec/unit/js_test_core/resources/runners/firefox_runner_spec.rb
       describe "POST /runners/firefox" do
         before do
           stub(Thread).start.yields
@@ -200,11 +137,7 @@ module JsTestCore
           stub(create_runner_connection).send_head
           stub(create_runner_connection).send_body
           create_runner_connection.receive_data("POST /runners/firefox HTTP/1.1\r\nHost: _\r\n\r\n")
-<<<<<<< HEAD:vendor/js-test-core/spec/unit/js_test_core/resources/runners/firefox_runner_spec.rb
           @runner = Resources::Runners::Runner.find(suite_id)
-=======
-          @runner = Resources::Runners::FirefoxRunner.find(suite_id)
->>>>>>> bdda07f2c71511f181aab95e0472c4e19ffd06e7:vendor/js-test-core/spec/unit/js_test_core/resources/runners/firefox_runner_spec.rb
           mock(driver).stop
         end
 
