@@ -1,3 +1,5 @@
+- Client accepts selenium_browser_start_command parameter, which allows the user to parameterize the selenium_browser_start_command
+
 0.3.0
 - Client accepts selenium_server_start_command parameter, which allows the user to parameterize the selenium_server_start_command
 - Added support for running specs in Internet Explorer via POST /runners/iexplore
