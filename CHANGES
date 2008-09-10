@@ -1,3 +1,6 @@
+0.3.2
+- Fixed vendor directory not being included in the gem
+
 0.3.1
 - Client accepts selenium_browser_start_command parameter, which allows the user to parameterize the selenium_browser_start_command
 
