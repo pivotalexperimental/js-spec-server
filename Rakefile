@@ -26,14 +26,15 @@ def run_suite
 end
 
 PKG_NAME = "js_spec"
-PKG_VERSION = "0.3.1"
+PKG_VERSION = "0.3.2"
 PKG_FILES = FileList[
   '[A-Z]*',
   '*.rb',
   'lib/**/*.rb',
   'core/**',
   'bin/**',
-  'spec/**/*.rb'
+  'spec/**/*.rb',
+  'vendor/**/*'
 ]
 
 spec = Gem::Specification.new do |s|
