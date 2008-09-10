@@ -34,7 +34,7 @@ PKG_FILES = FileList[
   'core/**',
   'bin/**',
   'spec/**/*.rb',
-  'vendor/*'
+  'vendor/**/*'
 ]
 
 spec = Gem::Specification.new do |s|
