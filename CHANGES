@@ -1,3 +1,5 @@
+- Fixed for latest version of Selenium, Rack, and Thin
+
 0.3.2
 - Fixed vendor directory not being included in the gem
 

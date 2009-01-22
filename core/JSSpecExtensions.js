@@ -95,6 +95,7 @@ JSSpec.Logger.prototype.onRunnerEndWithServerNotification = function() {
   var xml = window.ActiveXObject ? new ActiveXObject("Microsoft.XMLHTTP") : new XMLHttpRequest();
   xml.open("POST", '/session/finish', true);
   xml.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+  xml.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
   xml.send("text=" + encodeURIComponent(this.get_error_message_text()));
 }
 JSSpec.Logger.prototype.onRunnerEnd = JSSpec.Logger.prototype.onRunnerEndWithServerNotification;
