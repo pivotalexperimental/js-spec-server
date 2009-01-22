@@ -92,19 +92,12 @@ function parse_url(url) {
 JSSpec.Logger.prototype.onRunnerEndWithoutServerNotification = JSSpec.Logger.prototype.onRunnerEnd;
 JSSpec.Logger.prototype.onRunnerEndWithServerNotification = function() {
   this.onRunnerEndWithoutServerNotification();
-  var suite_id = JSSpec.suite_id();
-  if(suite_id) {
-    var xml = window.ActiveXObject ? new ActiveXObject("Microsoft.XMLHTTP") : new XMLHttpRequest();
-    xml.open("POST", '/suites/' + suite_id + '/finish', true);
-    xml.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-    xml.send("text=" + encodeURIComponent(this.get_error_message_text()));
-  }
+  var xml = window.ActiveXObject ? new ActiveXObject("Microsoft.XMLHTTP") : new XMLHttpRequest();
+  xml.open("POST", '/session/finish', true);
+  xml.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+  xml.send("text=" + encodeURIComponent(this.get_error_message_text()));
 }
 JSSpec.Logger.prototype.onRunnerEnd = JSSpec.Logger.prototype.onRunnerEndWithServerNotification;
-
-JSSpec.suite_id = function() {
-  return top.runOptions ? top.runOptions.getSessionId() : 'user';
-}
 
 JSSpec.Logger.prototype.get_error_message_text = function() {
   var error_messages = [];

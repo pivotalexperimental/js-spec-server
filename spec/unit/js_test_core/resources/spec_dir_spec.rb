@@ -17,15 +17,15 @@ module JsTestCore
           end
 
           it "returns script tags for each test javascript file" do
-            doc.at("script[@src='/specs/failing_spec.js']").should exist
-            doc.at("script[@src='/specs/foo/failing_spec.js']").should exist
-            doc.at("script[@src='/specs/foo/passing_spec.js']").should exist
+            doc.at("script[@src='/specs/failing_spec.js']").should_not be_nil
+            doc.at("script[@src='/specs/foo/failing_spec.js']").should_not be_nil
+            doc.at("script[@src='/specs/foo/passing_spec.js']").should_not be_nil
           end
 
           it "returns the js specs template" do
-            doc.at("link[@href='/core/JSSpec.css']").should exist
-            doc.at("script[@src='/core/JSSpec.js']").should exist
-            doc.at("script[@src='/core/JSSpecExtensions.js']").should exist
+            doc.at("link[@href='/core/JSSpec.css']").should_not be_nil
+            doc.at("script[@src='/core/JSSpec.js']").should_not be_nil
+            doc.at("script[@src='/core/JSSpecExtensions.js']").should_not be_nil
             doc.at("body/#js_spec_content").should_not be_nil
           end
         end
