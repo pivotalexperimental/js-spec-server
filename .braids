@@ -4,5 +4,5 @@ vendor/js-test-core:
   url: git://github.com/pivotal/js-test-core.git
   branch: master
   type: git
-  revision: 2bf573e13de6aebb46b7f474fcf5cc037f99b79c
+  revision: cfcb723637f1aba7a773dd75ac4fb251f5c9a93d
   remote: braid/vendor/js-test-core
