@@ -5,7 +5,7 @@ $:.unshift(File.expand_path("#{dir}/../vendor/js-test-core/lib"))
 require "js_test_core"
 JsTestCore::Resources::WebRoot.dispatch_specs
 
-require "#{dir}/js_spec/resources"
+require "#{dir}/js_spec/representations"
 
 module JsSpec
   DEFAULT_HOST = JsTestCore::DEFAULT_HOST
@@ -16,11 +16,4 @@ module JsSpec
   Client = JsTestCore::Client
 end
 JsTestCore.core_path = File.expand_path("#{dir}/../core")
-
-class JsTestCore::Resources::Specs::SpecFile
-  include JsSpec::Resources::Spec
-end
-
-class JsTestCore::Resources::Specs::SpecDir
-  include JsSpec::Resources::Spec
-end
+JsTestCore::Resources::Specs::Spec.spec_representation_class = JsSpec::Representations::Spec
