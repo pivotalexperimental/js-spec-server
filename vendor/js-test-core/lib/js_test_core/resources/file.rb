@@ -1,7 +1,9 @@
 module JsTestCore
   module Resources
-    class File < ThinRest::Resource
+    class File < Resource
       MIME_TYPES = {
+        '.html' => 'text/html',
+        '.htm' => 'text/html',
         '.js' => 'text/javascript',
         '.css' => 'text/css',
         '.png' => 'image/png',
@@ -19,9 +21,9 @@ module JsTestCore
         connection.terminate_after_sending do
           connection.send_head(
             200,
-              'Content-Type' => content_type,
-              'Last-Modified' => ::File.mtime(absolute_path).rfc822,
-              'Content-Length' => ::File.size(absolute_path)
+            'Content-Type' => content_type,
+            'Last-Modified' => ::File.mtime(absolute_path).rfc822,
+            'Content-Length' => ::File.size(absolute_path)
           )
           ::File.open(absolute_path) do |file|
             while !file.eof?
@@ -29,11 +31,11 @@ module JsTestCore
             end
           end
         end
-
-        def ==(other)
-          return false unless other.class == self.class
-          absolute_path == other.absolute_path && relative_path == other.relative_path
-        end
+      end
+      
+      def ==(other)
+        return false unless other.class == self.class
+        absolute_path == other.absolute_path && relative_path == other.relative_path
       end
     end
   end

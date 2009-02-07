@@ -1,6 +1,6 @@
 module JsTestCore
   module Resources
-    class SessionFinish < ThinRest::Resource
+    class SessionFinish < Resources::Resource
       property :session
       
       def post

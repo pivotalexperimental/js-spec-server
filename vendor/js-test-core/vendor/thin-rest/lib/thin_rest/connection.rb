@@ -35,15 +35,16 @@ module ThinRest
       terminate_after_sending do
         send_data("Content-Length: #{data.length}\r\n\r\n")
         send_data(data)
+        yield(self) if block_given?
       end
     end
 
     def terminate_after_sending
       yield
+    ensure
       unless request.persistent?
         close_connection_after_writing
       end
-    ensure
       terminate_request
     end
 
@@ -74,7 +75,7 @@ module ThinRest
 
     def handle_error(error)
       log_error error
-      close_connection rescue nil
+      Resources::InternalError.new(:connection => self, :error => error).get
     rescue Exception => unexpected_error
       log_error unexpected_error
     end

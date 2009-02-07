@@ -1,13 +1,17 @@
 module JsTestCore
   module Resources
     module Specs
-      class SpecDirSuperclass < ::JsTestCore::Resources::Dir
-        def get
-          raise NotImplementedError, "#{self.class}#get needs to be implemented"
-        end
-      end
+      class SpecDir < ::JsTestCore::Resources::Dir
+        include Spec
 
-      class SpecDir < SpecDirSuperclass
+        def get
+          if ::File.file?(absolute_path)
+            super
+          else
+            get_generated_spec
+          end
+        end
+        
         def spec_files
           glob("/**/*_spec.js")
         end

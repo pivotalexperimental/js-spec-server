@@ -4,5 +4,5 @@ vendor/thin-rest:
   url: git://github.com/pivotal/thin-rest.git
   branch: master
   type: git
-  revision: 906a2b90007ffbe2b6ccbc5d17170492bf27cfc6
+  revision: 61351eddd5d9eeac727e5fa7e36eab0e86d3b411
   remote: braid/vendor/thin-rest

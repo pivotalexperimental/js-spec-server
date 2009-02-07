@@ -6,8 +6,24 @@ require "guid"
 
 Spec::Runner.configure do |config|
   config.mock_with :rr
+end
 
-  config.before do
+class Spec::ExampleGroup
+  class << self
+    def thin_logging
+      if @thin_logging.nil?
+        return false
+      else
+        @thin_logging
+      end
+    end
+    attr_writer :thin_logging
+  end
+
+  attr_reader :connection
+  before do
+    @connection = create_connection
+
     stub(EventMachine).send_data {raise "EventMachine.send_data needs to be stubbed or mocked out"}
     stub(EventMachine).close_connection {raise "EventMachine.close_connection needs to be stubbed or mocked out"}
     stub(EventMachine).close_connection_after_writing {raise "EventMachine.close_connection_after_writing needs to be stubbed or mocked out"}
@@ -16,22 +32,13 @@ Spec::Runner.configure do |config|
     stub(EventMachine).add_timer
     Thin::Logging.silent = !self.class.thin_logging
     Thin::Logging.debug = self.class.thin_logging
-    Thin::Logging.trace = false
   end
-end
 
-module Spec::Example::ExampleGroupMethods
-  def thin_logging
-    if @thin_logging.nil?
-      return false
-    else
-      @thin_logging
-    end
+  after(:each) do
+    Thin::Logging.silent = true
+    Thin::Logging.debug = false
   end
-  attr_writer :thin_logging
-end
 
-module Spec::Example::ExampleMethods
   def create_connection(guid = Guid.new.to_s)
     connection = TestConnection.new(guid)
     connection.backend = Object.new
@@ -52,7 +59,7 @@ class TestConnection < ThinRest::Connection
   end
 end
 
-class Root < ThinRest::Resource
+class Root < ThinRest::Resources::Resource
   property :connection
   route 'subresource', 'Subresource'
   route 'another_subresource', 'AnotherSubresource'
@@ -70,7 +77,7 @@ class Root < ThinRest::Resource
   end
 end
 
-class Subresource < ThinRest::Resource
+class Subresource < ThinRest::Resources::Resource
   def do_get
     "GET response"
   end
@@ -88,7 +95,7 @@ class Subresource < ThinRest::Resource
   end
 end
 
-class AnotherSubresource < ThinRest::Resource
+class AnotherSubresource < ThinRest::Resources::Resource
   def do_get
     "Another GET response"
   end
@@ -106,17 +113,19 @@ class AnotherSubresource < ThinRest::Resource
   end
 end
 
-class BlockSubresource < ThinRest::Resource
+class BlockSubresource < ThinRest::Resources::Resource
   property :foobar
 end
 
-class ErrorSubresource < ThinRest::Resource
+class ErrorSubresource < ThinRest::Resources::Resource
+  ERROR_MESSAGE = "An Error"
+
   def get
-    raise "An Error"
+    raise ERROR_MESSAGE
   end
 end
 
-class WrongPropertySubresource < ThinRest::Resource
+class WrongPropertySubresource < ThinRest::Resources::Resource
   property :foobar
   def get
     "Wrong Property"

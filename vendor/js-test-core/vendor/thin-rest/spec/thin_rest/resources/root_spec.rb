@@ -1,6 +1,6 @@
-require File.expand_path("#{File.dirname(__FILE__)}/../../unit_spec_helper")
+require File.expand_path("#{File.dirname(__FILE__)}/../../thin_rest_spec_helper")
 
-module JsTestCore
+module ThinRest
   module Resources
     describe ResourceNotFound do
       describe "GET /invalid_path" do

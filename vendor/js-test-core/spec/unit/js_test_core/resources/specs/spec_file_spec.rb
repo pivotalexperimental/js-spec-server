@@ -4,36 +4,35 @@ module JsTestCore
   module Resources
     module Specs
       describe SpecFile do
-        attr_reader :file, :absolute_path, :relative_path, :request, :response
-        before do
-          @absolute_path = "#{spec_root_path}/failing_spec.js"
-          @relative_path = "/specs/failing_spec.js"
-          @file = Resources::Specs::SpecFile.new(:connection => connection, :absolute_path => absolute_path, :relative_path => relative_path)
-          @request = Rack::Request.new( Rack::MockRequest.env_for(relative_path) )
-          @response = Rack::Response.new
-        end
-
-        describe "#get" do
-          it "raises NotImplementedError" do
-            lambda do
-              file.get
-            end.should raise_error(NotImplementedError)
+        describe "GET" do
+          before do
+            WebRoot.dispatch_specs
           end
 
-          it "can be overridden from a Module without needing to redefine the #get method" do
-            spec_file_class = Resources::Specs::SpecFile.clone
-            mod = Module.new do
-              def get
-              end
-            end
-            spec_file_class.class_eval do
-              include mod
-            end
-            @file = spec_file_class.new(:connection => connection, :absolute_path => absolute_path, :relative_path => relative_path)
+          describe "GET /specs/custom_suite.html" do
+            it "renders the custom_suite.html file" do
+              path = "#{spec_root_path}/custom_suite.html"
+              mock(connection).send_head(200, 'Content-Type' => "text/html", 'Content-Length' => ::File.size(path), 'Last-Modified' => ::File.mtime(path).rfc822)
+              mock(connection).send_data(::File.read(path))
 
-            lambda do
-              file.get
-            end.should_not raise_error
+              connection.receive_data("GET /specs/custom_suite.html HTTP/1.1\r\nHost: _\r\n\r\n")
+            end
+          end
+
+          describe "GET /specs/foo/passing_spec" do
+            it "renders a Representations::Spec with passing_spec.js as the spec file" do
+              path = "#{spec_root_path}/foo/passing_spec.js"
+              mock(connection).send_head(200, 'Content-Type' => "text/html", 'Last-Modified' => ::File.mtime(path).rfc822)
+              mock(connection).send_data(/Content-Length: /)
+              mock(connection).send_data(Regexp.new("Js Test Core Suite")) do |html|
+                doc = Nokogiri::HTML(html)
+                js_files = doc.search("script").map {|script| script["src"]}
+                js_files.should include("/specs/foo/passing_spec.js")
+                js_files.should_not include("/specs/foo/failing_spec.js")
+              end
+
+              connection.receive_data("GET /specs/foo/passing_spec HTTP/1.1\r\nHost: _\r\n\r\n")
+            end
           end
         end
       end

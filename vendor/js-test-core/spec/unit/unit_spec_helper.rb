@@ -4,7 +4,7 @@ require "spec"
 dir = File.dirname(__FILE__)
 $LOAD_PATH.unshift File.expand_path("#{dir}/../../lib")
 require "js_test_core"
-require "hpricot"
+require "nokogiri"
 require "guid"
 
 Spec::Runner.configure do |config|

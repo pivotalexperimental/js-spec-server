@@ -7,7 +7,7 @@ module JsTestCore
         elsif subdir = subdir(name)
           subdir
         else
-          FileNotFound.new(env.merge(:name => name))
+          Resources::ResourceNotFound.new(env.merge(:name => name))
         end
       end
 

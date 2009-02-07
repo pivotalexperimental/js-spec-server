@@ -2,12 +2,9 @@ require File.expand_path("#{File.dirname(__FILE__)}/../thin_rest_spec_helper")
 
 module ThinRest
   describe Connection do
-    attr_reader :connection
-
     describe "#process" do
       attr_reader :result
       before do
-        @connection = create_connection
         stub(connection).socket_address {'0.0.0.0'}
 
         @result = ""
@@ -57,12 +54,13 @@ module ThinRest
       end
 
       context "when the call raises an error" do
-        it "logs the error and closes the connection" do
+        it "responds with a 500 page and logs the error" do
           error = nil
           mock(connection).log_error(is_a(Exception)) do |error_arg|
             error = error_arg
           end
-          mock(connection).close_connection
+          mock(connection).send_head(500)
+          mock(connection).send_body(Regexp.new(ErrorSubresource::ERROR_MESSAGE))
 
           connection.receive_data "GET /error_subresource HTTP/1.1\r\nHost: _\r\n\r\n"
           error.message.should =~ Regexp.new("/error_subresource")

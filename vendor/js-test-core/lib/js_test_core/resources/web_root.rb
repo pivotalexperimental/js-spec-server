@@ -1,6 +1,6 @@
 module JsTestCore
   module Resources
-    class WebRoot < ThinRest::Resource
+    class WebRoot < Resources::Resource
       route "" do |env, name|
         self
       end
@@ -28,7 +28,7 @@ module JsTestCore
             :relative_path => "/specs"
           ))
         else
-          Resources::FileNotFound.new(env.merge(:name => name))
+          Resources::ResourceNotFound.new(env.merge(:name => name))
         end
       end
       route ANY do |env, name|
@@ -44,7 +44,7 @@ module JsTestCore
             :relative_path => "/#{name}"
           ))
         else
-          Resources::FileNotFound.new(env.merge(:name => name))
+          Resources::ResourceNotFound.new(env.merge(:name => name))
         end
       end
 

@@ -1,7 +1,7 @@
 module JsTestCore
   module Resources
-    class Session < ThinRest::Resource
-      class Collection < ThinRest::Resource
+    class Session < Resources::Resource
+      class Collection < Resources::Resource
         route ANY do |env, id|
           Session.new(env.merge(:id => id))
         end

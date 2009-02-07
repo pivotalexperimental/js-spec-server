@@ -1,7 +1,7 @@
 module JsTestCore
   module Resources
-    class Runner < ThinRest::Resource
-      class Collection < ThinRest::Resource
+    class Runner < Resources::Resource
+      class Collection < Resources::Resource
         property :selenium_browser_start_command
         route 'firefox' do |env, name|
           self.selenium_browser_start_command = "*firefox"
@@ -23,7 +23,7 @@ module JsTestCore
           selenium_host = rack_request['selenium_host'].to_s == "" ? 'localhost' : rack_request['selenium_host'].to_s
           selenium_port = rack_request['selenium_port'].to_s == "" ? 4444 : Integer(rack_request['selenium_port'])
           http_address = "#{parsed_spec_url.scheme}://#{parsed_spec_url.host}:#{parsed_spec_url.port}"
-          driver = Selenium::SeleniumDriver.new(
+          driver = Selenium::Client::Driver.new(
             selenium_host,
             selenium_port,
             selenium_browser_start_command,

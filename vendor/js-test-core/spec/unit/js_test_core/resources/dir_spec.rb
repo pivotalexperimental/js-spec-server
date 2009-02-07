@@ -23,10 +23,10 @@ module JsTestCore
         end
       end
 
-      describe "GET /javascripts/i_dont_exist - FileNotFound" do
+      describe "GET /javascripts/i_dont_exist - ResourceNotFound" do
         it "returns a 404 error" do
           mock(connection).send_head(404)
-          mock(connection).send_body("")
+          mock(connection).send_body(Regexp.new("File /javascripts/i_dont_exist not found"))
 
           connection.receive_data("GET /javascripts/i_dont_exist HTTP/1.1\r\nHost: _\r\n\r\n")
         end
@@ -41,10 +41,11 @@ module JsTestCore
 
         it "returns an array of matching Files under this directory with the correct relative paths" do
           globbed_files = dir.glob("/**/*_spec.js")
-          globbed_files.size.should == 3
+          globbed_files.size.should == 4
           globbed_files.should contain_spec_file_with_correct_paths("/failing_spec.js")
           globbed_files.should contain_spec_file_with_correct_paths("/foo/failing_spec.js")
           globbed_files.should contain_spec_file_with_correct_paths("/foo/passing_spec.js")
+          globbed_files.should contain_spec_file_with_correct_paths("/custom_dir_and_suite/passing_spec.js")
         end
       end
     end
